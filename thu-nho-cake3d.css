@@ -1,0 +1,39 @@
+.cake{transform-style:preserve-3d;perspective:900px;animation:cake-build-3d 4.2s cubic-bezier(.2,.8,.2,1) forwards}
+.opening.ready .cake{opacity:1;animation:cake-bob-3d 4.4s ease-in-out infinite}
+.cake-body{border-radius:11px 11px 27px 27px;background:repeating-linear-gradient(180deg,#bf6d78 0 14px,#ffe8d8 14px 21px,#d98b90 21px 24px,#fff0df 24px 32px);box-shadow:inset 0 9px 12px #fff8,inset 0 -8px 12px #9a506144,0 13px 13px #9b536038;transform:translateZ(2px);transform-style:preserve-3d}
+.cake-half{position:absolute;z-index:2;background-image:radial-gradient(circle at 14% 31%,#ffe2c0 0 1px,transparent 2px),radial-gradient(circle at 68% 61%,#ffe6c8 0 1px,transparent 2px),radial-gradient(circle at 39% 84%,#b95f70 0 1px,transparent 2px),linear-gradient(90deg,#8c3e5380 0%,transparent 18%,#fff8 48%,transparent 80%,#77364d70),repeating-linear-gradient(180deg,#cf7480 0 13px,#fff0df 13px 20px,#a95068 20px 23px,#ffe5d3 23px 31px);border:1px solid #b76475;box-shadow:inset 0 8px 10px #fff7,inset 0 -8px 9px #71384d60,0 3px 4px #80404a4a;transform-style:preserve-3d;backface-visibility:visible}
+.half-left{border-radius:12px 0 0 23px}.half-right{border-radius:0 12px 23px 0}
+.cake-body:before{content:"";position:absolute;z-index:1;left:3%;right:3%;top:-4px;height:18px;border-radius:50%;background:linear-gradient(180deg,#fffdf8,#f5dcd2 78%,#d9959e);box-shadow:0 4px 6px #ad677533;pointer-events:none}
+.cake-body:after{height:20px;bottom:-8px;background:linear-gradient(180deg,#d38a92,#a95469);box-shadow:0 5px 0 #8f4e64,0 10px 16px #98566540}
+.cake-top{z-index:5;top:71px;height:79px;border-radius:50% / 40%;overflow:visible;transform:translateZ(14px);background:radial-gradient(ellipse at 50% 48%,#c97778 0 2%,#f2c4b8 3% 8%,#a75767 9% 10%,#e9b2af 11% 20%,#f6d9cf 21% 65%,#d68791 100%);box-shadow:inset 0 4px 9px #fff,inset 0 -7px 9px #b864764d,0 5px 8px #8d4b5740;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.18,.78,.22,1),opacity .6s}
+.cake-top:before,.cake-top:after{content:"";position:absolute;z-index:4;inset:0;border-radius:50% / 40%;background:radial-gradient(ellipse at 45% 18%,#fffef8 0 13%,#fff7ed 30%,#f7dfd4 72%,#dc9aa0 100%);box-shadow:inset 0 3px 5px #fff,inset 0 -5px 7px #c578835c;transition:transform .72s cubic-bezier(.18,.78,.22,1);pointer-events:none}
+.cake-top:before{clip-path:polygon(0 0,50% 0,50% 100%,0 100%);transform-origin:right center;border-right:1px solid #b96d78}
+.cake-top:after{clip-path:polygon(50% 0,100% 0,100% 100%,50% 100%);transform-origin:left center;border-left:1px solid #b96d78}
+.berry{z-index:7;display:block;width:18px;height:20px;border-radius:52% 52% 48% 48%;background:radial-gradient(ellipse at 28% 22%,#ffc0ae 0 8%,transparent 30%),radial-gradient(ellipse at 50% 60%,#ef535b 0,#cf243d 60%,#85172f 100%);background-size:100% 100%;color:transparent;font-size:0;box-shadow:inset -2px -3px 3px #67152d77,0 3px 4px #74334666;filter:drop-shadow(0 2px 2px #74334655);transform:translateZ(18px)}
+.berry:before{content:"";position:absolute;inset:4px 3px;background:radial-gradient(ellipse at 30% 35%,#ffe8ae 0 1px,transparent 1.4px),radial-gradient(ellipse at 70% 58%,#ffe8ae 0 1px,transparent 1.4px),radial-gradient(ellipse at 45% 82%,#ffe8ae 0 1px,transparent 1.4px)}
+.berry:after{content:"";position:absolute;left:50%;top:-4px;width:15px;height:8px;transform:translateX(-50%);background:linear-gradient(90deg,#477c50,#83a957,#477c50);clip-path:polygon(50% 100%,0 15%,38% 35%,45% 0,58% 34%,100% 8%,68% 100%)}
+.berry-a{left:52px;top:25px}.berry-b{left:99px;top:14px}.berry-c{right:49px;top:27px}
+.icing-drip{z-index:6;top:47px;width:25px;background:linear-gradient(90deg,#f6e7dc,#fffdf6 45%,#edcfc8);box-shadow:inset -3px 0 3px #d8979b,0 2px 2px #a6536540;border-radius:0 0 12px 12px}
+.drip-a{left:39px;height:30px}.drip-b{left:95px;height:42px}.drip-c{right:41px;height:28px}
+.cream-rosette{position:absolute;z-index:7;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#e5abb1 0 2px,#fffaf2 3px 4px,transparent 5px),conic-gradient(from 20deg,#fffaf4 0 16%,#ecd4ca 18% 27%,#fffaf4 30% 48%,#e9cdc9 51% 60%,#fffaf4 63% 82%,#e9cdc9 85% 92%,#fffaf4 95%);box-shadow:0 2px 4px #9a576044,0 0 0 1px #fff8;transform:translateZ(20px)}
+.rosette-a{left:34px;top:29px}.rosette-b{left:84px;top:48px}.rosette-c{right:31px;top:31px}
+.surface-cut{position:absolute;z-index:9;left:auto;top:17%;width:7px;height:66%;border-radius:99px;opacity:0;pointer-events:none;transform:scaleY(.06) rotate(2deg);transform-origin:top center;background:linear-gradient(90deg,#fff9 0 15%,#a64d5c 25%,#793647 50%,#d98f91 74%,#fff8 90%);box-shadow:0 0 4px #63313e80,0 1px 2px #fff;transition:opacity .22s,transform .44s cubic-bezier(.16,.8,.2,1)}
+.surface-cut.cut-one{left:28%;top:18%}.surface-cut.cut-two{left:50%;top:12%}.surface-cut.cut-three{left:72%;top:18%}
+.opening.cuts-1 .surface-cut.cut-one,.opening.cuts-2 .surface-cut.cut-one,.opening.cuts-2 .surface-cut.cut-two,.opening.cuts-3 .surface-cut{opacity:.95;transform:scaleY(1) rotate(2deg)}
+.cake-cut{z-index:8;left:calc(50% - 5px);width:10px;border-radius:5px;background:repeating-linear-gradient(180deg,#fff1df 0 9px,#b4616c 9px 12px,#edc9b5 12px 19px);box-shadow:inset 0 0 5px #743345a8,0 0 7px #6d344457;transform:scaleY(.08);transform-origin:top center}
+.opening.is-cut .half-left{transform:translate3d(-35px,5px,16px) rotate(-4deg) rotateY(8deg)}
+.opening.is-cut .half-right{transform:translate3d(35px,5px,16px) rotate(4deg) rotateY(-8deg)}
+.opening.is-cut .cake-top{transform:translate3d(0,-6px,23px) rotate(-1deg);opacity:1}
+.opening.is-cut .cake-top:before{transform:translate3d(-12px,0,10px) rotateY(-5deg)}
+.opening.is-cut .cake-top:after{transform:translate3d(12px,0,10px) rotateY(5deg)}
+.opening.is-cut .cake-cut{opacity:1;transform:scaleY(1)}
+.opening.is-cut .berry-a{translate:-8px -2px}.opening.is-cut .berry-b{translate:0 -4px}.opening.is-cut .berry-c{translate:8px -2px}
+.cake-plate{z-index:0;border:1px solid #fff;transform:translateZ(-4px);background:radial-gradient(ellipse at 50% 20%,#fff 0,#fffdfb 54%,#eacbd0 100%);box-shadow:inset 0 3px 5px #fff,0 5px 0 #e2bdc2,0 10px 13px #a3667040}
+.cake-plate:before{content:"";position:absolute;inset:4px;border:1px solid #e4c2c7;border-radius:50%;box-shadow:inset 0 1px 2px #fff}
+.cake-plate span{position:relative;z-index:1;text-shadow:0 1px #fff}
+.candle{z-index:10;transform:translateZ(22px) rotate(-1deg);box-shadow:inset 2px 0 2px #fff9,inset -3px 0 3px #bd647a,0 5px 7px #8d4c5d40}
+.cake-heart{z-index:10;text-shadow:0 1px 4px #883a5570}
+@keyframes cake-build-3d{0%,34%{opacity:0;transform:translateY(38px) rotateX(13deg) rotateZ(-3deg) scale(.48)}55%{opacity:.35;transform:translateY(10px) rotateX(13deg) rotateZ(-3deg) scale(.82)}75%{opacity:1;transform:translateY(-7px) rotateX(13deg) rotateZ(-3deg) scale(1.12)}88%,100%{opacity:1;transform:translateY(0) rotateX(13deg) rotateZ(-3deg) scale(1.08)}}
+@keyframes cake-bob-3d{0%,100%{transform:translateY(0) rotateX(13deg) rotateZ(-3deg) scale(1.08)}50%{transform:translateY(-5px) rotateX(13deg) rotateZ(-3deg) scale(1.09)}}
+@media(max-width:650px){.cake{transform-origin:center bottom}.cake-top{height:76px}}
+@media(prefers-reduced-motion:reduce){.cake{animation:none;opacity:1;transform:rotateX(13deg) rotateZ(-3deg)}.opening.ready .cake{animation:none}.cake-top:before,.cake-top:after,.cake-half,.surface-cut{transition:none}}

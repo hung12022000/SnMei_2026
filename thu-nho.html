@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#fff3f4" />
+  <title>Chiếc bánh sinh nhật dành cho em</title>
+  <link rel="stylesheet" href="thu-nho.css" />
+  <link rel="stylesheet" href="thu-nho-birthday.css" />
+  <link rel="stylesheet" href="thu-nho-interactions.css" />
+  <link rel="stylesheet" href="thu-nho-transitions.css" />
+  <link rel="stylesheet" href="thu-nho-magic.css" />
+  <link rel="stylesheet" href="thu-nho-cake3d.css" />
+  <link rel="stylesheet" href="thu-nho-photos.css" />
+  <script src="thu-nho.js" defer></script>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="magic-dust" id="magic-dust" aria-hidden="true"></div>
+  <div class="scene-transition" id="scene-transition" aria-hidden="true" hidden>
+    <div class="transition-stage">
+      <div class="transition-cube"><span class="cube-face cube-front">♥</span><span class="cube-face cube-back">✦</span><span class="cube-face cube-left">♡</span><span class="cube-face cube-right">✿</span><span class="cube-face cube-top">✧</span><span class="cube-face cube-bottom">♥</span></div>
+      <i class="transition-shard shard-1">✦</i><i class="transition-shard shard-2">♡</i><i class="transition-shard shard-3">✿</i><i class="transition-shard shard-4">✧</i><i class="transition-shard shard-5">♥</i><i class="transition-shard shard-6">✦</i><i class="transition-shard shard-7">♡</i><i class="transition-shard shard-8">✧</i><i class="transition-shard shard-9">✿</i><i class="transition-shard shard-10">♥</i><i class="transition-shard shard-11">✦</i><i class="transition-shard shard-12">♡</i>
+    </div>
+  </div>
+  <header class="topline"><span class="tiny-heart">♥</span><span>GỬI EM, CÔ GÁI ANH THƯƠNG</span><span class="tiny-heart">♥</span></header>
+
+  <main>
+    <section class="opening" id="opening" aria-labelledby="intro-title">
+      <div class="scene-glow" aria-hidden="true"></div>
+      <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+      <div class="scene-copy">
+        <span class="overline">HÔM NAY LÀ NGÀY CỦA EM</span>
+        <h1 id="intro-title">Có điều bất ngờ<br />đang <i>được chuẩn bị</i>.</h1>
+        <p>Những điều dễ thương nhất đang bay đến<br />để dành tặng riêng cho em.</p>
+      </div>
+      <div class="gathering" aria-hidden="true"><span class="gather-item item-1">✿</span><span class="gather-item item-2">♡</span><span class="gather-item item-3">✦</span><span class="gather-item item-4">🍓</span><span class="gather-item item-5">♡</span><span class="gather-item item-6">✿</span><span class="gather-item item-7">🍒</span><span class="gather-item item-8">✧</span><span class="gather-item item-9">♡</span><span class="gather-item item-10">✦</span><span class="gather-item item-11">🌸</span><span class="gather-item item-12">♡</span></div>
+      <div class="cake-stage" aria-label="Bánh sinh nhật phủ kem hồng với một ngọn nến">
+        <div class="cake-sparkle sparkle-a">✦</div><div class="cake-sparkle sparkle-b">✧</div>
+        <div class="cake">
+          <div class="candle"><span class="flame"></span><i></i></div>
+          <div class="cake-top">
+            <span class="surface-cut cut-one"></span><span class="surface-cut cut-two"></span><span class="surface-cut cut-three"></span>
+            <span class="berry berry-a">●</span><span class="berry berry-b">●</span><span class="berry berry-c">●</span>
+            <span class="cream-rosette rosette-a"></span><span class="cream-rosette rosette-b"></span><span class="cream-rosette rosette-c"></span>
+            <span class="icing-drip drip-a"></span><span class="icing-drip drip-b"></span><span class="icing-drip drip-c"></span>
+          </div>
+          <div class="cake-body">
+            <div class="cake-half half-left"></div><div class="cake-half half-right"></div>
+            <span class="cake-heart">♥</span><span class="cake-cut"></span>
+            <span class="slice-mark cut-one"></span><span class="slice-mark cut-two"></span><span class="slice-mark cut-three"></span>
+          </div>
+          <div class="cake-plate"><span>BAKED WITH LOVE</span></div>
+        </div>
+        <div class="cut-swipe-area" id="cut-swipe-area" role="button" tabindex="0" aria-label="Vuốt dọc qua bánh ba lần để cắt" aria-disabled="true"><span class="knife-cursor" aria-hidden="true">✦</span></div>
+      </div>
+      <div class="cut-prompt" id="cut-prompt" aria-live="polite"><span class="cut-hint" id="cut-hint">ĐANG CHUẨN BỊ MÓN QUÀ CHO EM…</span><div class="slash-progress" id="slash-progress" aria-hidden="true"><span></span><span></span><span></span></div><span class="cut-count" id="cut-count">0 / 3 NHÁT DỌC</span></div>
+      <span class="float f1">♡</span><span class="float f2">✿</span><span class="float f3">♡</span>
+    </section>
+
+    <div class="story hidden" id="story">
+      <section class="chapter hello" id="hello">
+        <span class="eyebrow">THỔI NẾN VÀ ƯỚC ĐIỀU ƯỚC</span>
+        <div class="big-heart" aria-hidden="true"><span>♥</span><i>✦</i><b>✿</b></div>
+        <h2>Chúc mừng sinh nhật em<br /><em>cô gái anh thương!</em></h2>
+        <p>Anh chúc em tuổi mới thật nhiều niềm vui,<br />bình yên và mọi điều ước thành sự thật.</p>
+        <button class="next-button" data-next="memories">Cùng anh xem nhé <span>↓</span></button>
+      </section>
+
+      <section class="chapter memories" id="memories">
+        <div class="section-heading"><span class="eyebrow">ALBUM NHỎ / 19 KHOẢNH KHẮC</span><h2>Những ngày <em>thật xinh</em></h2><p>Những khoảnh khắc anh luôn muốn giữ lại cùng em.</p></div>
+        <div class="film-roll memory-grid" id="memory-grid" aria-label="Album gồm 19 ảnh kỷ niệm"></div>
+        <dialog class="photo-lightbox" id="photo-lightbox" aria-label="Xem ảnh kỷ niệm">
+          <button class="lightbox-close" type="button" aria-label="Đóng ảnh">×</button>
+          <button class="lightbox-nav lightbox-prev" type="button" aria-label="Ảnh trước">‹</button>
+          <figure><img id="lightbox-image" alt="" /><figcaption id="lightbox-caption"></figcaption></figure>
+          <button class="lightbox-nav lightbox-next" type="button" aria-label="Ảnh tiếp theo">›</button>
+        </dialog>
+        <button class="next-button" data-next="letter">Một lời anh muốn nói <span>↓</span></button>
+      </section>
+
+      <section class="chapter letter-chapter" id="letter">
+        <div class="letter-card"><div class="letter-top"><span>✿</span><span>GỬI EM</span><span>✿</span></div>
+          <h2>Lời chúc sinh nhật <em>gửi em</em></h2>
+          <div class="letter-body"><p>Chào em,</p><p>Có thể anh không phải là người giỏi nói những lời hoa mỹ, nhưng tình cảm anh dành cho em luôn là thật lòng nhất. Chúc mừng sinh nhật em! Chúc em tuổi mới ngày càng xinh đẹp, rạng rỡ và lúc nào cũng hạnh phúc vì có anh ở bên.</p><p>Thêm một tuổi mới, anh chúc em bớt đi những âu lo, công việc và cuộc sống luôn suôn sẻ, thuận lợi. Cảm ơn em vì đã luôn thấu hiểu, bao dung và ở bên anh. Mong rằng thế giới này sẽ luôn đối xử thật dịu dàng với cô gái của anh. Sinh nhật vui vẻ nhé, tình yêu của anh!</p></div>
+          <div class="signature">Yêu em thật nhiều,<br /><span>— anh của em</span></div>
+          <div class="letter-stamp">♡</div>
+        </div>
+        <button class="next-button" data-next="finale">Còn một điều anh muốn nói <span>↓</span></button>
+      </section>
+
+      <section class="chapter finale" id="finale">
+        <span class="eyebrow">MÓN QUÀ CUỐI CÙNG</span>
+        <h2>Nếu tình yêu là một bức ảnh,<br />anh sẽ chọn khoảnh khắc <em>bên em.</em></h2>
+        <div class="heart-gallery" id="heart-gallery" aria-label="Những tấm ảnh nhỏ bay thành trái tim, quay nhẹ rồi tỏa ra"><div class="heart-orbit" id="heart-orbit"></div></div>
+        <p class="final-note">Hôm nay, ngày mai, và cả những ngày bình thường.<br /><strong>Anh vẫn chọn em.</strong></p>
+        <button class="restart" id="restart">Đọc lại từ đầu <span>↗</span></button>
+        <footer>TỪ ANH, VỚI TẤT CẢ YÊU THƯƠNG DÀNH CHO EM <span>♥</span></footer>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

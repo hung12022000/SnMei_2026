@@ -1,0 +1,28 @@
+.memory-grid{display:grid;width:min(970px,calc(100% - 40px));grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin:0 auto;padding:0;border:0;background:none;transform:none;overflow:visible}
+.memory-grid:before,.memory-grid:after{display:none}
+.memory-photo{position:relative;min-width:0;display:flex;flex-direction:column;gap:8px;padding:8px 8px 11px;border:1px solid #f0dadd;border-radius:13px;background:linear-gradient(145deg,#fffefd,#fff7f4);color:#987177;text-align:left;box-shadow:0 8px 24px #9e5e7315;cursor:zoom-in;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s;will-change:transform}
+.memory-photo img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center;border-radius:8px;background:#f9efeb}
+.memory-photo span{padding:1px 4px;font:italic 12px 'Playfair Display',serif;letter-spacing:.02em}
+.memory-photo:hover,.memory-photo:focus-visible{z-index:2;transform:translateY(-7px) rotate(0deg) scale(1.025);border-color:#dfabb5;box-shadow:0 17px 30px #9e5e7330;outline:none}
+.memory-photo:focus-visible{outline:2px solid #d78796;outline-offset:3px}
+.memories.is-visible .memory-photo:not(:hover){animation:memory-card-float 5.4s ease-in-out infinite;animation-delay:calc(var(--card-index,0)*-.24s)}
+.memory-photo:nth-child(4n+1){--card-index:0;rotate:-1.2deg}.memory-photo:nth-child(4n+2){--card-index:1;rotate:.8deg}.memory-photo:nth-child(4n+3){--card-index:2;rotate:-.6deg}.memory-photo:nth-child(4n){--card-index:3;rotate:1.1deg}
+.photo-lightbox{position:fixed;width:min(92vw,920px);max-width:none;height:min(92svh,900px);max-height:none;margin:auto;padding:34px 76px 26px;border:1px solid #f0dadd;border-radius:20px;background:linear-gradient(145deg,#fffdfa,#fff4f3);color:#754e59;box-shadow:0 24px 90px #57324145;overflow:visible}
+.photo-lightbox::backdrop{background:#38242eb8}
+.photo-lightbox figure{height:100%;margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.photo-lightbox figure img{display:block;max-width:100%;max-height:calc(100% - 38px);object-fit:contain;border-radius:9px;box-shadow:0 12px 35px #57324125}
+.photo-lightbox figcaption{font:italic 15px 'Playfair Display',serif;color:#9d717a}
+.lightbox-close,.lightbox-nav{position:absolute;z-index:1;display:grid;place-items:center;border:1px solid #e8c9ce;border-radius:50%;background:#fffaf7eF;color:#a76d79;box-shadow:0 5px 18px #57324120;transition:transform .2s,background .2s;color .2s}
+.lightbox-close:hover,.lightbox-nav:hover{transform:scale(1.08);background:#d98f9e;color:white}
+.lightbox-close{top:14px;right:14px;width:38px;height:38px;font-size:25px;line-height:1}
+.lightbox-nav{top:50%;width:46px;height:46px;font:34px/1 Georgia,serif;transform:translateY(-50%)}
+.lightbox-nav:hover{transform:translateY(-50%) scale(1.08)}
+.lightbox-prev{left:15px}.lightbox-next{right:15px}
+.heart-photo{border-radius:5px;background:#fff;box-shadow:0 5px 14px #5f39442e}
+.heart-photo:before,.heart-photo:after{content:none!important}
+.heart-photo img{display:block;width:100%;height:100%;object-fit:cover}
+.finale.is-formed .heart-photo{border-color:#fff;box-shadow:0 7px 18px #58323f45}
+@keyframes memory-card-float{0%,100%{translate:0 0}50%{translate:0 -5px}}
+@media(max-width:900px){.memory-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}}
+@media(max-width:650px){.memory-grid{width:min(540px,calc(100% - 28px));grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.memory-photo{padding:6px 6px 9px;border-radius:10px}.memory-photo img{border-radius:7px}.memory-photo span{font-size:11px}.photo-lightbox{width:96vw;height:88svh;padding:48px 47px 22px;border-radius:15px}.lightbox-close{top:9px;right:9px}.lightbox-nav{width:38px;height:38px;font-size:29px}.lightbox-prev{left:5px}.lightbox-next{right:5px}}
+@media(prefers-reduced-motion:reduce){.memory-photo{animation:none!important;transition:none!important;will-change:auto}.memory-photo:hover{transform:none}.memory-photo:nth-child(n){rotate:0deg}.lightbox-close,.lightbox-nav{transition:none}}
