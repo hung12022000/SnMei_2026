@@ -17,6 +17,7 @@
 <body>
   <div class="grain" aria-hidden="true"></div>
   <div class="magic-dust" id="magic-dust" aria-hidden="true"></div>
+  <div class="scroll-celebration" id="scroll-celebration" aria-hidden="true"></div>
   <div class="scene-transition" id="scene-transition" aria-hidden="true" hidden>
     <div class="transition-stage">
       <div class="transition-cube"><span class="cube-face cube-front">♥</span><span class="cube-face cube-back">✦</span><span class="cube-face cube-left">♡</span><span class="cube-face cube-right">✿</span><span class="cube-face cube-top">✧</span><span class="cube-face cube-bottom">♥</span></div>
@@ -71,9 +72,10 @@
         <div class="section-heading"><span class="eyebrow">ALBUM NHỎ / 19 KHOẢNH KHẮC</span><h2>Những ngày <em>thật xinh</em></h2><p>Những khoảnh khắc anh luôn muốn giữ lại cùng em.</p></div>
         <div class="memory-experience" id="memory-experience" aria-label="Không gian ảnh kỷ niệm, cuộn để bước qua từng cảnh">
           <div class="memory-stage" id="memory-stage" aria-live="off">
-            <div class="memory-stage-glow" aria-hidden="true"></div>
-            <div class="memory-scene-stack" id="memory-grid"></div>
-            <div class="memory-stage-meta"><span class="memory-stage-label">MỘT KHÔNG GIAN CỦA RIÊNG HAI TA</span><span class="memory-stage-count" id="memory-stage-count">01 / 07</span></div>
+            <div class="cinema-curtain cinema-curtain-left" aria-hidden="true"></div><div class="cinema-curtain cinema-curtain-right" aria-hidden="true"></div>
+            <div class="cinema-screen"><div class="memory-stage-glow" aria-hidden="true"></div><div class="memory-scene-stack" id="memory-grid"></div></div>
+            <div class="cinema-audience" aria-hidden="true"><span class="viewer viewer-boy"><i></i><b></b></span><span class="viewer viewer-girl"><i></i><b></b></span><span class="audience-seat"></span></div>
+            <div class="memory-stage-meta"><span class="memory-stage-label">RẠP KÝ ỨC CỦA RIÊNG HAI TA</span><span class="memory-stage-count" id="memory-stage-count">01 / 07</span></div>
             <div class="memory-progress" aria-hidden="true"><span id="memory-progress-fill"></span></div>
             <span class="memory-scroll-cue" aria-hidden="true">CUỘN CHẬM ĐỂ NHỚ LẠI <i>↓</i></span>
           </div>
@@ -102,9 +104,61 @@
       </section>
 
       <section class="chapter finale" id="finale">
-        <span class="eyebrow">MÓN QUÀ CUỐI CÙNG</span>
-        <h2>Nếu tình yêu là một bức ảnh,<br />anh sẽ chọn khoảnh khắc <em>bên em.</em></h2>
+        <span class="eyebrow">BỘ PHIM NHỎ CỦA CHÚNG MÌNH</span>
+        <h2>Điều anh muốn nhớ nhất<br />là nụ cười <em>của em.</em></h2>
         <div class="heart-gallery" id="heart-gallery" aria-label="Những tấm ảnh nhỏ bay thành trái tim, quay nhẹ rồi tỏa ra"><div class="heart-orbit" id="heart-orbit"></div></div>
+        <div class="birthday-film" aria-label="Hoạt cảnh sinh nhật: chàng trai hạnh phúc ngắm cô gái thổi nến trên chiếc bánh">
+          <div class="film-topline"><span>SN. MEI</span><span>♡ MỘT KHOẢNH KHẮC ANH MUỐN GIỮ MÃI ♡</span><span>2026</span></div>
+          <svg class="birthday-film-art" viewBox="0 0 1000 560" role="img" aria-labelledby="film-title film-desc" xmlns="http://www.w3.org/2000/svg">
+            <title id="film-title">Anh ngắm em thổi nến sinh nhật</title><desc id="film-desc">Trong căn phòng ánh nến ấm áp, chàng trai mỉm cười nhìn cô gái nhắm mắt thổi chiếc bánh sinh nhật.</desc>
+            <defs>
+              <linearGradient id="film-bg" x2="0" y2="1"><stop stop-color="#32223d"/><stop offset=".62" stop-color="#794653"/><stop offset="1" stop-color="#d58183"/></linearGradient>
+              <linearGradient id="film-window" x2="0" y2="1"><stop stop-color="#efaeb1"/><stop offset="1" stop-color="#ffdcae"/></linearGradient>
+              <linearGradient id="film-dress" x2=".8" y2="1"><stop stop-color="#fff0de"/><stop offset="1" stop-color="#e6a9ac"/></linearGradient>
+              <linearGradient id="film-sweater" x2=".8" y2="1"><stop stop-color="#f1a2a5"/><stop offset="1" stop-color="#bb6277"/></linearGradient>
+              <radialGradient id="film-candle-glow"><stop stop-color="#fff2be" stop-opacity=".85"/><stop offset="1" stop-color="#ffce8b" stop-opacity="0"/></radialGradient>
+              <filter id="film-soft"><feGaussianBlur stdDeviation="14"/></filter>
+            </defs>
+            <rect width="1000" height="560" fill="url(#film-bg)"/>
+            <ellipse cx="520" cy="350" rx="330" ry="190" fill="#ffd3a2" opacity=".13" filter="url(#film-soft)"/>
+            <path d="M0 0h155v560H0zm845 0h155v560H845z" fill="#402633" opacity=".66"/>
+            <path d="M44 40h140v172H44z" rx="6" fill="url(#film-window)" opacity=".45"/><path d="M114 40v172M44 126h140" stroke="#ffe6d2" stroke-opacity=".55" stroke-width="5"/>
+            <circle cx="810" cy="95" r="35" fill="#ffe0b4" opacity=".8"/><circle cx="810" cy="95" r="80" fill="#ffd99b" opacity=".16"/>
+            <g class="film-sparkles" fill="#ffe9bd"><path d="m275 75 5 13 13 5-13 5-5 13-5-13-13-5 13-5z"/><path d="m735 190 4 10 10 4-10 4-4 10-4-10-10-4 10-4z"/><circle cx="210" cy="245" r="3"/><circle cx="785" cy="270" r="3"/><circle cx="352" cy="135" r="3"/></g>
+            <path d="M0 465q250-35 500 0t500 0v95H0z" fill="#402639" opacity=".56"/>
+            <!-- The boy leans toward her, smiling in the candlelight. -->
+            <g class="film-boy">
+              <path d="M190 560q16-116 91-140 65-21 131 16 44 27 58 124z" fill="url(#film-sweater)"/>
+              <path d="M256 389q-32-26-19-83 10-47 64-48 64 0 75 57 11 56-29 89-51 40-91-15z" fill="#f4c6a6"/>
+              <path d="M236 318q-14-57 28-84 52-36 96 2 22 18 18 61-18-23-34-44-27 35-87 40l-10 45-13-20z" fill="#4c2b2c"/>
+              <path d="M352 325q13 7 22 1" fill="none" stroke="#70424a" stroke-width="4" stroke-linecap="round"/>
+              <path d="M352 351q12 10 24 0" fill="none" stroke="#b35f69" stroke-width="3" stroke-linecap="round"/>
+              <path d="M287 390q22 18 47 0" fill="none" stroke="#f8d8b9" stroke-opacity=".65" stroke-width="4"/>
+            </g>
+            <!-- The girl closes her eyes and gently blows toward the candles. -->
+            <g class="film-girl">
+              <path d="M570 560q8-116 95-145 77-25 156 27 38 25 49 118z" fill="url(#film-dress)"/>
+              <path d="M679 385q-37-15-44-66-6-53 30-83 39-33 90-9 48 23 43 82-4 56-45 78-38 20-74-2z" fill="#f3c4a4"/>
+              <path d="M655 319q-13-74 31-105 51-36 102 4 34 27 21 98-14-26-19-62-29 12-68 0-17 33-51 51z" fill="#713c35"/>
+              <path d="M674 326q12 8 24 0" fill="none" stroke="#71444c" stroke-width="4" stroke-linecap="round"/>
+              <path d="M656 352q-9 6-19 2" fill="none" stroke="#b5656d" stroke-width="4" stroke-linecap="round"/>
+              <path d="M718 383q24 21 49 1" fill="none" stroke="#fff2e2" stroke-opacity=".7" stroke-width="5"/>
+              <path d="M761 427q-54 19-116 2" fill="none" stroke="#f6dfce" stroke-width="13" stroke-linecap="round"/>
+            </g>
+            <!-- Small breath ribbons travel from her toward the candles. -->
+            <g class="film-breath" fill="none" stroke="#fff3db" stroke-linecap="round"><path d="M631 350q-29-11-54 0"/><path d="M624 361q-22-5-41 4"/></g>
+            <ellipse cx="510" cy="409" rx="185" ry="28" fill="#3b2637" opacity=".3"/>
+            <path d="M307 408h403l-31 26H341z" fill="#edd0bf"/><path d="M342 432h331l-28 89H370z" fill="#a45d69"/><path d="M370 521h275" stroke="#f1c6b1" stroke-width="7" stroke-linecap="round"/>
+            <!-- Birthday cake, warm frosting, strawberries and animated candle flames. -->
+            <ellipse cx="510" cy="394" rx="117" ry="17" fill="#f7d5c9"/><path d="M406 351q104-16 208 0v43q-104 22-208 0z" fill="#fff0d8"/><path d="M406 366q15 18 29 0t29 0 29 0 29 0 29 0 29 0 34 0" fill="none" stroke="#de9ca0" stroke-width="8" stroke-linecap="round"/>
+            <path d="M453 348v-47m52 45v-56m52 57v-45" stroke="#fff4d9" stroke-width="8" stroke-linecap="round"/>
+            <g class="film-flames"><path d="M453 294q-18-20 0-37 18 17 0 37z" fill="#ffc96e"/><path d="M505 286q-19-23 0-41 20 19 0 41z" fill="#ffd47c"/><path d="M557 294q-18-20 0-37 18 17 0 37z" fill="#ffc96e"/></g>
+            <g fill="#d45d69"><path d="M427 347q-15-21 5-29 17 13-5 29z"/><path d="M590 347q-16-23 5-30 18 15-5 30z"/></g>
+            <g class="film-hearts" fill="#ffcad2"><path d="M493 230c-20-20-44 8 0 35 44-27 20-55 0-35z"/><path d="M525 192c-13-13-29 5 0 23 29-18 13-36 0-23z"/></g>
+            <g class="film-confetti"><path d="m285 278 8 18-5 2-8-18z" fill="#ffd08e"/><path d="m742 294 8 17-5 3-9-17z" fill="#f7b5c0"/><path d="m812 345 10 10-4 4-10-10z" fill="#ffe6af"/><path d="m227 353 10 10-4 4-10-10z" fill="#f7b5c0"/></g>
+          </svg>
+          <div class="film-bottomline"><span>▶ KHOẢNH KHẮC ĐANG PHÁT</span><span class="film-progress"><i></i></span><span>♡</span></div>
+        </div>
         <p class="final-note">Hôm nay, ngày mai, và cả những ngày bình thường.<br /><strong>Anh vẫn chọn em.</strong></p>
         <figure class="birthday-qr-card">
           <img src="images/birthday-qr.png" alt="Mã QR mở trang quà sinh nhật" loading="lazy" />

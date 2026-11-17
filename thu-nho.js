@@ -6,6 +6,7 @@ const cutHint = document.querySelector('#cut-hint');
 const cutCountLabel = document.querySelector('#cut-count');
 const finale = document.querySelector('#finale');
 const heartOrbit = document.querySelector('#heart-orbit');
+const scrollCelebration = document.querySelector('#scroll-celebration');
 const memoryGrid = document.querySelector('#memory-grid');
 const memoryExperience = document.querySelector('#memory-experience');
 const memoryTrack = document.querySelector('#memory-track');
@@ -27,6 +28,7 @@ let activeMemoryIndex = 0;
 let lastMemoryTrigger = null;
 let memoryFrame = 0;
 let memoryNearViewport = false;
+let lastCelebrationScroll = window.scrollY;
 
 // Stable art direction: every photograph appears once in a deliberate scene.
 const memoryScenes = [
@@ -154,7 +156,26 @@ if ('IntersectionObserver' in window) {
 } else {
   memoryNearViewport = true;
 }
-window.addEventListener('scroll', requestMemoryUpdate, { passive: true });
+window.addEventListener('scroll', () => {
+  requestMemoryUpdate();
+  if (story.classList.contains('hidden') || photoLightbox.open || reduceMotion) return;
+  const distance = Math.abs(window.scrollY - lastCelebrationScroll);
+  if (distance < 44) return;
+  lastCelebrationScroll = window.scrollY;
+  if (scrollCelebration.childElementCount > 12) return;
+  const burstSize = Math.min(4, Math.max(2, Math.round(distance / 170) + 1));
+  for (let i = 0; i < burstSize; i++) {
+    const particle = document.createElement('span');
+    particle.className = 'scroll-particle';
+    particle.textContent = ['♡', '♥', '🎂', '✧'][Math.floor(Math.random() * 4)];
+    particle.style.setProperty('--particle-x', `${8 + Math.random() * 84}vw`);
+    particle.style.setProperty('--particle-y', `${68 + Math.random() * 19}vh`);
+    particle.style.setProperty('--particle-drift', `${Math.round(Math.random() * 100 - 50)}px`);
+    particle.style.setProperty('--particle-duration', `${2.3 + Math.random() * 1.4}s`);
+    scrollCelebration.append(particle);
+    particle.addEventListener('animationend', () => particle.remove(), { once: true });
+  }
+}, { passive: true });
 window.addEventListener('resize', requestMemoryUpdate, { passive: true });
 document.addEventListener('visibilitychange', requestMemoryUpdate);
 requestMemoryUpdate();

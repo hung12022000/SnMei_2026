@@ -1,7 +1,7 @@
 /* Cinematic memory space: scroll is the timeline, not an autoplaying slideshow. */
 .chapter.memories{display:block;min-height:0;padding:112px 0 0;overflow:visible;background:radial-gradient(ellipse at 50% 25%,#fff 0,#fff9f8 54%,#fcf1f1 100%)}
 .memories .section-heading{position:relative;z-index:2;margin:0 auto 22px;padding:0 22px;text-align:center}
-.memory-experience{position:relative;width:100%;height:700svh;height:700vh;isolation:isolate}
+.memory-experience{position:relative;width:100%;height:700vh;height:700svh;isolation:isolate}
 .memory-stage{position:sticky;top:0;width:100vw;height:100vh;height:100svh;margin-left:calc(50% - 50vw);overflow:hidden;display:grid;place-items:center;isolation:isolate;background:radial-gradient(ellipse at 50% 46%,#fff 0,#fff8f7 45%,#faecee 100%)}
 .memory-stage:before{content:"";position:absolute;inset:7% 9%;border:1px solid #e8c7ce55;border-radius:50%;transform:scaleY(.54);box-shadow:0 0 100px #e6b4bd1e,inset 0 0 85px #f2d8da26;pointer-events:none}
 .memory-stage-glow{position:absolute;width:min(62vw,730px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#fff 0,#f8e4e7 49%,#f4dce0 70%,transparent 72%);opacity:.46;filter:blur(3px);pointer-events:none}
@@ -36,7 +36,7 @@
 .memory-progress span{display:block;width:100%;height:100%;background:#c77d8b;transform:scaleX(0);transform-origin:left center;will-change:transform}
 .memory-scroll-cue{position:absolute;z-index:6;bottom:clamp(20px,4vh,40px);left:50%;transform:translateX(-50%);color:#b39095;font-size:8px;letter-spacing:.2em;white-space:nowrap}
 .memory-scroll-cue i{display:block;margin-top:8px;text-align:center;font:normal 14px Georgia,serif;animation:memory-cue 1.8s ease-in-out infinite}
-.memory-track{height:600svh;height:600vh}
+.memory-track{height:600vh;height:600svh}
 .memory-nojs{display:grid;width:min(980px,calc(100% - 32px));margin:30px auto;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
 .memory-nojs img{width:100%;height:200px;object-fit:contain;background:#f8efed;border:5px solid #fff;box-shadow:0 8px 25px #67404b18}
 .photo-lightbox{position:fixed;width:min(92vw,920px);max-width:none;height:min(92svh,900px);max-height:none;margin:auto;padding:34px 76px 26px;border:1px solid #f0dadd;border-radius:20px;background:linear-gradient(145deg,#fffdfa,#fff4f3);color:#754e59;box-shadow:0 24px 90px #57324145;overflow:visible}
@@ -59,7 +59,7 @@
   .chapter.memories{padding-top:90px}
   .memories .section-heading{margin-bottom:10px}
   .memories .section-heading p{max-width:290px;margin-left:auto;margin-right:auto}
-  .memory-experience{height:700svh;height:700vh}
+  .memory-experience{height:700vh;height:700svh}
   .memory-stage{height:100svh}
   .memory-stage:before{inset:13% 1%;transform:scaleY(.56)}
   .memory-stage-glow{width:100vw;opacity:.42}
@@ -88,4 +88,87 @@
   .memory-photo{transition:none;will-change:auto}
   .memory-photo:hover{transform:translate(-50%,-50%) translateZ(0) scale(1)}
   .lightbox-close,.lightbox-nav{transition:none}
+}
+
+/* A velvet little cinema around the memory scenes. */
+.memory-stage{background:radial-gradient(ellipse at 50% 41%,#70404c 0,#382636 46%,#1e1725 100%);}
+.memory-stage:before{inset:0;border:0;border-radius:0;transform:none;box-shadow:inset 0 0 150px #0f0b16a8;background:radial-gradient(ellipse at 50% 53%,transparent 30%,#17111d65 100%);z-index:4}
+.memory-stage:after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 50% 92%,#e99b8a20,transparent 40%)}
+.cinema-screen{position:relative;z-index:2;width:min(1020px,76vw);height:min(650px,62svh);margin-top:-2.2svh;padding:13px;border:1px solid #e9c895;border-radius:7px;background:linear-gradient(135deg,#d7b78d,#634452 25%,#241c2c 52%,#84605b 80%,#f0d2a1);box-shadow:0 25px 85px #0e0916a3,0 0 0 5px #19121d,0 0 0 6px #d7b78d77,inset 0 1px 1px #fff8;overflow:hidden}
+.cinema-screen:before{content:"";position:absolute;inset:13px;z-index:4;border:1px solid #f9e2be35;pointer-events:none;box-shadow:inset 0 0 42px #160e1c45}
+.cinema-screen:after{content:"";position:absolute;inset:13px;z-index:3;pointer-events:none;background:linear-gradient(120deg,#fff7 0,transparent 18%,transparent 83%,#f9dcac0c)}
+.memory-stage-glow{inset:13px;width:auto;aspect-ratio:auto;border-radius:0;background:radial-gradient(ellipse at 50% 50%,#f8e8e2 0,#f8e8e2 35%,#e6d3cf 79%,#392b39 100%);opacity:.22;filter:blur(18px)}
+.memory-scene-stack{inset:13px;perspective:1400px;background:radial-gradient(ellipse at 50% 50%,#fffaf2 0,#f1e4de 68%,#d8c2c0 100%);overflow:hidden}
+.memory-photo{border:6px solid #fffdf5;border-radius:3px;box-shadow:0 28px 70px #39243550,0 0 0 1px #8a6c6745}
+.memory-photo img{background:#f6eee6}
+.cinema-curtain{position:absolute;z-index:5;top:0;bottom:0;width:clamp(95px,15vw,220px);pointer-events:none;opacity:.9;filter:drop-shadow(0 8px 25px #140d19a8)}
+.cinema-curtain-left{left:0;background:repeating-linear-gradient(90deg,#481f33 0 13%,#72334b 14% 22%,#351c31 24% 29%,#8a4050 32% 39%,#4b2137 43% 52%,#291827 56%);clip-path:polygon(0 0,100% 0,83% 16%,92% 34%,78% 55%,92% 78%,78% 100%,0 100%)}
+.cinema-curtain-right{right:0;background:repeating-linear-gradient(90deg,#291827 0 13%,#4b2137 17% 27%,#8a4050 33% 40%,#351c31 46% 53%,#72334b 60% 73%,#481f33 82%);clip-path:polygon(0 0,100% 0,100% 100%,22% 100%,8% 78%,22% 55%,8% 34%,17% 16%)}
+.cinema-audience{position:absolute;z-index:6;bottom:0;left:50%;width:310px;height:116px;transform:translateX(-50%);pointer-events:none}
+.viewer{position:absolute;bottom:0;width:92px;height:108px}
+.viewer i{position:absolute;left:27px;top:3px;width:42px;height:49px;border-radius:48% 48% 44% 44%;background:linear-gradient(110deg,#17131d,#34212c);box-shadow:inset -5px -2px #69404a}
+.viewer b{position:absolute;left:0;bottom:-14px;width:92px;height:76px;border-radius:52% 52% 0 0;background:linear-gradient(110deg,#251a27,#4d2b38 70%,#211722)}
+.viewer-boy{left:52px;transform:rotate(-2deg)}.viewer-boy i:before{content:"";position:absolute;left:-2px;top:2px;width:27px;height:20px;border-radius:80% 10% 0 10%;background:#21131b}
+.viewer-girl{right:48px;transform:rotate(2deg)}.viewer-girl i{background:linear-gradient(110deg,#21151e,#4c2831);box-shadow:inset 7px 1px #6c3d42}.viewer-girl i:after{content:"";position:absolute;right:-15px;top:-1px;width:28px;height:67px;border-radius:50% 50% 20% 50%;background:#552d35}
+.viewer-girl b{background:linear-gradient(105deg,#673e4a,#30202c)}
+.audience-seat{position:absolute;left:0;right:0;bottom:0;height:21px;border-radius:50% 50% 0 0;background:linear-gradient(#382333,#211724);box-shadow:0 -3px 15px #100b14}
+.memory-stage-meta{z-index:7;color:#f0d8bf;text-shadow:0 2px 8px #1b101d;}
+.memory-stage-count{color:#f1c797}
+.memory-progress{z-index:7;background:#d4b6a255}
+.memory-progress span{background:#f1c797;box-shadow:0 0 9px #f5d5ae}
+.memory-scroll-cue{z-index:7;color:#ecd6c4;text-shadow:0 2px 8px #1c111d}
+.memory-scroll-cue i{animation-name:memory-cue-cinema}
+@keyframes memory-cue-cinema{0%,100%{transform:translateY(0);opacity:.62}50%{transform:translateY(5px);opacity:1}}
+
+/* Scroll and touch movement release a small, restrained flutter of hearts and cake. */
+.scroll-celebration{position:fixed;inset:0;z-index:20;overflow:hidden;pointer-events:none}
+.scroll-particle{position:absolute;left:var(--particle-x);top:var(--particle-y);font-size:clamp(17px,2vw,27px);color:#ed9aaa;text-shadow:0 4px 14px #6b364450;opacity:0;animation:scroll-bloom var(--particle-duration) cubic-bezier(.16,.72,.28,1) both;filter:drop-shadow(0 2px 5px #fff6)}
+.scroll-particle:nth-child(3n){font-size:clamp(15px,1.7vw,23px);color:#f7d3aa}
+@keyframes scroll-bloom{0%{opacity:0;transform:translate3d(0,22px,0) scale(.48) rotate(-18deg)}16%{opacity:.9}62%{opacity:.78}100%{opacity:0;transform:translate3d(var(--particle-drift),-160px,0) scale(1.2) rotate(20deg)}}
+
+/* The closing scene plays like a tiny animated film, with no external video asset. */
+.birthday-film{position:relative;width:min(900px,calc(100% - 42px));margin:24px auto 25px;padding:11px 11px 9px;overflow:hidden;border:1px solid #b78780;border-radius:12px;background:linear-gradient(145deg,#3a293d,#1d1928);box-shadow:0 28px 85px #4d293d30,0 0 0 5px #f4e4dd,0 0 0 6px #d9bbb0;opacity:0;transform:translateY(20px) scale(.985);}
+.finale.is-active .birthday-film{animation:film-arrive 1.05s cubic-bezier(.2,.8,.2,1) both}
+.film-topline,.film-bottomline{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:7px 8px;color:#edcfb8;font-size:8px;letter-spacing:.17em}
+.film-topline span:nth-child(2){text-align:center;color:#f4dce0;font-size:7px;letter-spacing:.14em}
+.birthday-film-art{display:block;width:100%;height:auto;max-height:64svh;border-radius:5px;background:#432c3f}
+.film-bottomline{padding-top:9px;color:#e8c5ac;font-size:7px}
+.film-progress{display:block;flex:1;height:2px;overflow:hidden;background:#97747c}
+.film-progress i{display:block;width:100%;height:100%;background:#f7d3a4;transform:scaleX(.05);transform-origin:left;}
+.finale.is-active .film-progress i{animation:film-run 8.5s linear infinite}
+.finale.is-active .film-flames{transform-box:fill-box;transform-origin:center bottom;animation:candle-dance .65s ease-in-out infinite alternate}
+.finale.is-active .film-breath{animation:breath-glide 2.4s ease-in-out infinite}
+.finale.is-active .film-hearts{transform-box:fill-box;transform-origin:center;animation:heart-rise 3.2s ease-out infinite}
+.finale.is-active .film-confetti{animation:confetti-drift 3.8s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+.finale.is-active .film-boy{animation:boy-lean 4s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:bottom center}
+.finale.is-active .film-girl{animation:girl-breathe 3.4s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:bottom center}
+.finale.is-active .film-sparkles{animation:sparkle-warm 2.8s ease-in-out infinite alternate}
+@keyframes film-arrive{from{opacity:0;transform:translateY(20px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes film-run{0%{transform:scaleX(.02)}85%,100%{transform:scaleX(1)}}
+@keyframes candle-dance{from{transform:scale(.93,.94) skewX(-2deg)}to{transform:scale(1.05,1.09) skewX(2deg)}}
+@keyframes breath-glide{0%,100%{opacity:0;transform:translateX(4px) scaleX(.65)}30%,62%{opacity:.78;transform:translateX(-13px) scaleX(1)}}
+@keyframes heart-rise{0%{opacity:0;transform:translateY(8px) scale(.75)}30%{opacity:1}100%{opacity:0;transform:translateY(-27px) scale(1.16)}}
+@keyframes confetti-drift{from{transform:translateY(-3px) rotate(-5deg)}to{transform:translateY(13px) rotate(9deg)}}
+@keyframes boy-lean{from{transform:rotate(0)}to{transform:rotate(1.5deg) translateX(2px)}}
+@keyframes girl-breathe{from{transform:translateY(0)}to{transform:translateY(-2px)}}
+@keyframes sparkle-warm{from{opacity:.55}to{opacity:1}}
+@media(max-width:760px){
+  .cinema-screen{width:92vw;height:min(58svh,520px);margin-top:-3svh;padding:8px;border-radius:5px}
+  .cinema-screen:before,.cinema-screen:after,.memory-stage-glow,.memory-scene-stack{inset:8px}
+  .cinema-screen:before,.cinema-screen:after{inset:8px}
+  .cinema-curtain{width:10vw;opacity:.72}
+  .cinema-audience{width:230px;height:90px}
+  .viewer{transform:scale(.78);transform-origin:bottom center}
+  .viewer-boy{left:25px}.viewer-girl{right:25px}
+  .birthday-film{width:calc(100% - 30px);padding:7px;margin:18px auto 22px;border-radius:9px}
+  .film-topline,.film-bottomline{padding:6px 3px;font-size:7px;letter-spacing:.1em}
+  .film-topline span:nth-child(2){max-width:55%;font-size:6px;line-height:1.5}
+  .birthday-film-art{max-height:55svh}
+  .scroll-particle{font-size:21px}
+}
+@media(prefers-reduced-motion:reduce){
+  .memory-scroll-cue i,.scroll-particle{animation:none!important}
+  .scroll-particle{opacity:.72;transform:none}
+  .finale.is-active .birthday-film{animation:none;opacity:1;transform:none}
+  .finale.is-active .film-progress i,.finale.is-active .film-flames,.finale.is-active .film-breath,.finale.is-active .film-hearts,.finale.is-active .film-confetti,.finale.is-active .film-boy,.finale.is-active .film-girl,.finale.is-active .film-sparkles{animation:none!important}
 }
