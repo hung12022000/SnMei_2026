@@ -53,7 +53,7 @@ function makeMemoryGallery() {
       card.dataset.index = String(photoIndex);
       card.setAttribute('aria-label', `Mở ảnh ${String(photoIndex + 1).padStart(2, '0')} trong ${memoryImages.length} ảnh`);
       const image = document.createElement('img');
-      image.src = memoryImages[photoIndex];
+      image.dataset.src = memoryImages[photoIndex];
       image.alt = `Ảnh kỷ niệm ${String(photoIndex + 1).padStart(2, '0')}`;
       image.loading = sceneIndex < 2 ? 'eager' : 'lazy';
       image.decoding = 'async';
@@ -101,6 +101,13 @@ function updateMemoryScenes() {
   const scenePosition = progress * (memoryScenes.length - 1);
   const base = Math.min(memoryScenes.length - 1, Math.floor(scenePosition));
   const fraction = scenePosition - base;
+  // Decode the current scene and the next one before its crossfade begins.
+  [base, Math.min(base + 1, memoryScenes.length - 1)].forEach(sceneIndex => {
+    memoryGrid.querySelectorAll(`.memory-scene[data-scene="${sceneIndex}"] img[data-src]`).forEach(image => {
+      image.src = image.dataset.src;
+      delete image.dataset.src;
+    });
+  });
   if (reduceMotion) {
     const stillIndex = Math.min(memoryScenes.length - 1, Math.round(scenePosition));
     memoryGrid.querySelectorAll('.memory-scene').forEach((layer, index) => {
