@@ -7,6 +7,10 @@ const cutCountLabel = document.querySelector('#cut-count');
 const finale = document.querySelector('#finale');
 const heartOrbit = document.querySelector('#heart-orbit');
 const memoryGrid = document.querySelector('#memory-grid');
+const memoryExperience = document.querySelector('#memory-experience');
+const memoryTrack = document.querySelector('#memory-track');
+const memoryStageCount = document.querySelector('#memory-stage-count');
+const memoryProgressFill = document.querySelector('#memory-progress-fill');
 const photoLightbox = document.querySelector('#photo-lightbox');
 const lightboxImage = document.querySelector('#lightbox-image');
 const lightboxCaption = document.querySelector('#lightbox-caption');
@@ -20,36 +24,59 @@ let finaleVisible = false;
 let transitionBusy = false;
 const sceneTransition = document.querySelector('#scene-transition');
 let activeMemoryIndex = 0;
+let lastMemoryTrigger = null;
+let memoryFrame = 0;
+let memoryNearViewport = false;
+
+// Stable art direction: every photograph appears once in a deliberate scene.
+const memoryScenes = [
+  { layout: 'center', photos: [0, 1, 2] },
+  { layout: 'left', photos: [3, 4, 5] },
+  { layout: 'wide', photos: [6, 7, 8] },
+  { layout: 'solo', photos: [9] },
+  { layout: 'right', photos: [10, 11, 12] },
+  { layout: 'split', photos: [13, 14, 15] },
+  { layout: 'close', photos: [16, 17, 18] }
+];
 
 function makeMemoryGallery() {
-  memoryImages.forEach((src, index) => {
-    const card = document.createElement('button');
-    card.className = 'memory-photo';
-    card.type = 'button';
-    card.dataset.index = String(index);
-    card.setAttribute('aria-label', `Mở ảnh kỷ niệm ${index + 1}`);
-    const image = document.createElement('img');
-    image.src = src;
-    image.alt = `Khoảnh khắc ${String(index + 1).padStart(2, '0')}`;
-    image.loading = 'lazy';
-    image.decoding = 'async';
-    const caption = document.createElement('span');
-    caption.textContent = `Kỷ niệm ${String(index + 1).padStart(2, '0')}`;
-    card.append(image, caption);
-    memoryGrid.append(card);
+  memoryScenes.forEach((scene, sceneIndex) => {
+    const layer = document.createElement('div');
+    layer.className = `memory-scene scene-${scene.layout}`;
+    layer.dataset.scene = String(sceneIndex);
+    layer.setAttribute('aria-hidden', sceneIndex === 0 ? 'false' : 'true');
+    if (sceneIndex !== 0) layer.inert = true;
+    scene.photos.forEach((photoIndex, slotIndex) => {
+      const card = document.createElement('button');
+      card.className = `memory-photo memory-photo-${slotIndex === 0 ? 'main' : 'support'} memory-photo-slot-${slotIndex + 1}`;
+      card.type = 'button';
+      card.dataset.index = String(photoIndex);
+      card.setAttribute('aria-label', `Mở ảnh ${String(photoIndex + 1).padStart(2, '0')} trong ${memoryImages.length} ảnh`);
+      const image = document.createElement('img');
+      image.src = memoryImages[photoIndex];
+      image.alt = `Ảnh kỷ niệm ${String(photoIndex + 1).padStart(2, '0')}`;
+      image.loading = sceneIndex < 2 ? 'eager' : 'lazy';
+      image.decoding = 'async';
+      image.fetchPriority = sceneIndex === 0 ? 'high' : 'auto';
+      card.append(image);
+      layer.append(card);
+    });
+    memoryGrid.append(layer);
   });
+  memoryTrack.style.setProperty('--memory-scene-count', memoryScenes.length);
 }
 
 function showMemory(index) {
   activeMemoryIndex = (index + memoryImages.length) % memoryImages.length;
   lightboxImage.src = memoryImages[activeMemoryIndex];
   lightboxImage.alt = `Khoảnh khắc ${String(activeMemoryIndex + 1).padStart(2, '0')}`;
-  lightboxCaption.textContent = `Kỷ niệm ${String(activeMemoryIndex + 1).padStart(2, '0')} / ${memoryImages.length}`;
+  lightboxCaption.textContent = `Ảnh ${String(activeMemoryIndex + 1).padStart(2, '0')} · ${activeMemoryIndex + 1} / ${memoryImages.length}`;
 }
 
 memoryGrid.addEventListener('click', event => {
   const card = event.target.closest('.memory-photo');
-  if (!card) return;
+  if (!card || card.closest('.memory-scene')?.inert) return;
+  lastMemoryTrigger = card;
   showMemory(Number(card.dataset.index));
   photoLightbox.showModal();
 });
@@ -57,10 +84,73 @@ photoLightbox.querySelector('.lightbox-close').addEventListener('click', () => p
 photoLightbox.querySelector('.lightbox-prev').addEventListener('click', () => showMemory(activeMemoryIndex - 1));
 photoLightbox.querySelector('.lightbox-next').addEventListener('click', () => showMemory(activeMemoryIndex + 1));
 photoLightbox.addEventListener('click', event => { if (event.target === photoLightbox) photoLightbox.close(); });
+photoLightbox.addEventListener('close', () => {
+  if (lastMemoryTrigger?.isConnected && !lastMemoryTrigger.closest('.memory-scene')?.inert) lastMemoryTrigger.focus({ preventScroll: true });
+});
 photoLightbox.addEventListener('keydown', event => {
   if (event.key === 'ArrowLeft') showMemory(activeMemoryIndex - 1);
   if (event.key === 'ArrowRight') showMemory(activeMemoryIndex + 1);
 });
+
+function updateMemoryScenes() {
+  memoryFrame = 0;
+  if (!memoryNearViewport || document.hidden) return;
+  const rect = memoryExperience.getBoundingClientRect();
+  const scrollable = Math.max(1, memoryExperience.offsetHeight - window.innerHeight);
+  const progress = Math.max(0, Math.min(1, -rect.top / scrollable));
+  const scenePosition = progress * (memoryScenes.length - 1);
+  const base = Math.min(memoryScenes.length - 1, Math.floor(scenePosition));
+  const fraction = scenePosition - base;
+  if (reduceMotion) {
+    const stillIndex = Math.min(memoryScenes.length - 1, Math.round(scenePosition));
+    memoryGrid.querySelectorAll('.memory-scene').forEach((layer, index) => {
+      const shown = index === stillIndex;
+      layer.style.opacity = shown ? '1' : '0';
+      layer.style.transform = 'none';
+      layer.style.filter = 'none';
+      layer.style.pointerEvents = shown ? 'auto' : 'none';
+      layer.setAttribute('aria-hidden', shown ? 'false' : 'true');
+      layer.inert = !shown;
+    });
+    memoryStageCount.textContent = `${String(stillIndex + 1).padStart(2, '0')} / ${String(memoryScenes.length).padStart(2, '0')}`;
+    memoryProgressFill.style.transform = `scaleX(${progress})`;
+    return;
+  }
+  const fadeStart = .58;
+  const blend = base === memoryScenes.length - 1 ? 0 : Math.max(0, Math.min(1, (fraction - fadeStart) / (1 - fadeStart)));
+  const activeIndex = blend > .48 ? Math.min(base + 1, memoryScenes.length - 1) : base;
+  memoryGrid.querySelectorAll('.memory-scene').forEach((layer, index) => {
+    let opacity = 0;
+    let depth = 0;
+    if (index === base) { opacity = 1 - blend; depth = -blend; }
+    else if (index === base + 1 && base < memoryScenes.length - 1) { opacity = blend; depth = 1 - blend; }
+    layer.style.opacity = String(opacity);
+    layer.style.pointerEvents = opacity > .2 ? 'auto' : 'none';
+    layer.style.transform = `translate3d(0, ${depth * -2.2}%, ${depth * -24}px) scale(${1 + depth * .035})`;
+    layer.style.filter = `blur(${Math.min(2, depth * 1.4)}px)`;
+    const available = opacity > .35;
+    layer.setAttribute('aria-hidden', available ? 'false' : 'true');
+    layer.inert = !available;
+  });
+  memoryStageCount.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(memoryScenes.length).padStart(2, '0')}`;
+  memoryProgressFill.style.transform = `scaleX(${progress})`;
+}
+function requestMemoryUpdate() {
+  if (!memoryFrame && memoryNearViewport && !document.hidden) memoryFrame = window.requestAnimationFrame(updateMemoryScenes);
+}
+if ('IntersectionObserver' in window) {
+  const memoryObserver = new IntersectionObserver(entries => {
+    memoryNearViewport = entries.some(entry => entry.isIntersecting);
+    if (memoryNearViewport) requestMemoryUpdate();
+  }, { rootMargin: '100% 0px' });
+  memoryObserver.observe(memoryExperience);
+} else {
+  memoryNearViewport = true;
+}
+window.addEventListener('scroll', requestMemoryUpdate, { passive: true });
+window.addEventListener('resize', requestMemoryUpdate, { passive: true });
+document.addEventListener('visibilitychange', requestMemoryUpdate);
+requestMemoryUpdate();
 
 function jumpToScene(scene) {
   window.scrollTo({ top: scene.getBoundingClientRect().top + window.scrollY, behavior: 'instant' });
