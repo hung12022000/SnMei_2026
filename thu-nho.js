@@ -1,4 +1,13 @@
 const opening = document.querySelector('#opening');
+const birthdayIntro = document.querySelector('#birthday-intro');
+const introCakeTop = document.querySelector('#cake-top-surface');
+const candleHeartRing = document.querySelector('#candle-heart-ring');
+const birthdayStatus = document.querySelector('#birthday-status');
+const micToggle = document.querySelector('#mic-toggle');
+const musicToggle = document.querySelector('#music-toggle');
+const holdBlow = document.querySelector('#hold-blow');
+const birthdayCard = document.querySelector('#birthday-card');
+const confettiCanvas = document.querySelector('#birthday-confetti');
 const story = document.querySelector('#story');
 const swipeArea = document.querySelector('#cut-swipe-area');
 const knifeCursor = document.querySelector('.knife-cursor');
@@ -29,6 +38,19 @@ let lastMemoryTrigger = null;
 let memoryFrame = 0;
 let memoryNearViewport = false;
 let lastCelebrationScroll = window.scrollY;
+let candleCount = 0;
+let blownOutCount = 0;
+let extinguishInProgress = false;
+let birthdayCelebrated = false;
+let holdBlowTimer = 0;
+let audioContext = null;
+let micStream = null;
+let micSource = null;
+let analyser = null;
+let micCheckTimer = 0;
+let backgroundMusicTimer = 0;
+let birthdayTuneNodes = [];
+let blowThresholdStart = 0;
 
 // Stable art direction: every photograph appears once in a deliberate scene.
 const memoryScenes = [
@@ -74,6 +96,403 @@ function showMemory(index) {
   lightboxImage.alt = `Khoảnh khắc ${String(activeMemoryIndex + 1).padStart(2, '0')}`;
   lightboxCaption.textContent = `Ảnh ${String(activeMemoryIndex + 1).padStart(2, '0')} · ${activeMemoryIndex + 1} / ${memoryImages.length}`;
 }
+
+function makePartyCandle(x, y, index) {
+  const candle = document.createElement('button');
+  candle.className = 'party-candle';
+  candle.type = 'button';
+    candle.dataset.candleNumber = String(index + 1);
+  candle.style.left = `${x}%`;
+  candle.style.top = `${y}%`;
+  candle.style.setProperty('--candle-color', ['#f9a9bd', '#f5d67f', '#a9dce0', '#cab0ee', '#f6bd91'][index % 5]);
+  candle.setAttribute('aria-label', `Nến ${index + 1}, đang cháy`);
+  candle.setAttribute('aria-pressed', 'true');
+  candle.innerHTML = '<span class="candle-flame" aria-hidden="true"></span><span class="candle-wick" aria-hidden="true"></span><span class="candle-body" aria-hidden="true"></span><span class="candle-smoke" aria-hidden="true"></span>';
+  candleHeartRing.append(candle);
+}
+
+function setBirthdayStatus(message) {
+  birthdayStatus.textContent = message;
+}
+
+function countLitCandles() {
+  return candleHeartRing.querySelectorAll('.party-candle:not(.is-off)').length;
+}
+
+function paintCandleStatus() {
+  const lit = countLitCandles();
+  setBirthdayStatus(`${lit} / ${candleCount} ngọn nến đang cháy${extinguishInProgress ? ' · gió đang thổi qua bánh…' : ''}`);
+  if (lit === 0 && candleCount && !birthdayCelebrated && !extinguishInProgress) celebrateBirthday();
+}
+
+function addPartyCandle(x, y) {
+  if (extinguishInProgress || birthdayCelebrated) return;
+  candleCount += 1;
+  makePartyCandle(x, y, candleCount - 1);
+  setBirthdayStatus(`Đã thêm nến thứ ${candleCount} · hãy gửi em một điều ước ✨`);
+  playTone(659.25, .22, .035);
+}
+
+function togglePartyCandle(candle) {
+  if (extinguishInProgress || birthdayCelebrated) return;
+  const isOff = candle.classList.toggle('is-off');
+  candle.setAttribute('aria-pressed', String(!isOff));
+  candle.setAttribute('aria-label', `Nến ${Number(candle.dataset.candleNumber) || 1}, ${isOff ? 'đã tắt' : 'đang cháy'}`);
+  if (isOff) candle.classList.add('is-smoking');
+  else candle.classList.remove('is-smoking');
+  if (isOff) window.setTimeout(() => candle.classList.remove('is-smoking'), 1900);
+  paintCandleStatus();
+}
+
+function relightCandles() {
+  birthdayCard.close();
+  document.querySelector('#continue-intro-cut').hidden = true;
+  birthdayCelebrated = false;
+  extinguishInProgress = false;
+  candleHeartRing.replaceChildren();
+  candleCount = 24;
+  blownOutCount = 0;
+  for (let index = 0; index < candleCount; index++) {
+    const t = index * Math.PI * 2 / candleCount;
+    const x = 50 + (16 * Math.pow(Math.sin(t), 3) / 16) * 37;
+    const heartY = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+    const y = 8 + (13 - heartY) / 29 * 78;
+    makePartyCandle(x, y, index);
+  }
+  setBirthdayStatus('24 ngọn nến đang chờ điều ước của em ✨');
+  stopBirthdayTune();
+}
+
+introCakeTop.addEventListener('click', event => {
+  const candle = event.target.closest('.party-candle');
+  if (candle) { event.stopPropagation(); togglePartyCandle(candle); return; }
+  const bounds = introCakeTop.getBoundingClientRect();
+  const x = (event.clientX - bounds.left) / bounds.width;
+  const y = (event.clientY - bounds.top) / bounds.height;
+  if (((x - .5) / .49) ** 2 + ((y - .5) / .49) ** 2 > 1) return;
+  addPartyCandle(Math.max(8, Math.min(92, x * 100)), Math.max(10, Math.min(88, y * 100)));
+});
+
+function makePartySprinkles() {
+  const layer = document.querySelector('#cake-sprinkles');
+  const colors = ['#fff0ad', '#c0e8e6', '#f5b1c1', '#dfc7fa', '#fff9e7'];
+  for (let index = 0; index < 35; index++) {
+    const sprinkle = document.createElement('i');
+    sprinkle.className = 'cake-sprinkle';
+    sprinkle.style.left = `${5 + ((index * 37) % 90)}%`;
+    sprinkle.style.top = `${18 + ((index * 23) % 67)}%`;
+    sprinkle.style.setProperty('--sprinkle-color', colors[index % colors.length]);
+    sprinkle.style.setProperty('--sprinkle-rotate', `${(index * 47) % 160 - 80}deg`);
+    layer.append(sprinkle);
+  }
+}
+
+function makeBirthdayStars() {
+  const layer = document.querySelector('#birthday-stars');
+  for (let index = 0; index < 46; index++) {
+    const star = document.createElement('i');
+    star.className = 'birthday-star';
+    star.style.left = `${(index * 47 + 13) % 100}%`;
+    star.style.top = `${(index * 31 + 9) % 100}%`;
+    star.style.setProperty('--star-size', `${1 + (index % 4)}px`);
+    star.style.setProperty('--star-delay', `${-(index % 13) * .37}s`);
+    star.style.setProperty('--star-duration', `${2.2 + (index % 8) * .42}s`);
+    layer.append(star);
+  }
+}
+
+function getBirthdayAudio() {
+  if (!audioContext) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return null;
+    audioContext = new AudioContextClass();
+  }
+  if (audioContext.state === 'suspended') audioContext.resume();
+  return audioContext;
+}
+
+function playTone(frequency, duration = .35, volume = .045) {
+  const context = getBirthdayAudio();
+  if (!context || context.state === 'closed') return;
+  const oscillator = context.createOscillator();
+  const gain = context.createGain();
+  oscillator.type = 'sine';
+  oscillator.frequency.value = frequency;
+  gain.gain.setValueAtTime(.0001, context.currentTime);
+  gain.gain.exponentialRampToValueAtTime(volume, context.currentTime + .025);
+  gain.gain.exponentialRampToValueAtTime(.0001, context.currentTime + duration);
+  oscillator.connect(gain).connect(context.destination);
+  oscillator.start();
+  oscillator.stop(context.currentTime + duration + .035);
+}
+
+function toggleBirthdayMusic() {
+  if (backgroundMusicTimer) {
+    window.clearInterval(backgroundMusicTimer);
+    backgroundMusicTimer = 0;
+    musicToggle.setAttribute('aria-pressed', 'false');
+    musicToggle.textContent = '♫ Nhạc hộp nhạc: tắt';
+    return;
+  }
+  if (!getBirthdayAudio()) { setBirthdayStatus('Thiết bị này chưa hỗ trợ phát nhạc bằng Web Audio.'); return; }
+  const notes = [523.25, 392, 440, 392, 523.25, 493.88, 392, 392, 440, 392, 587.33, 523.25];
+  let noteIndex = 0;
+  playTone(notes[noteIndex++], .42, .025);
+  backgroundMusicTimer = window.setInterval(() => playTone(notes[noteIndex++ % notes.length], .44, .025), 470);
+  musicToggle.setAttribute('aria-pressed', 'true');
+  musicToggle.textContent = '♫ Nhạc hộp nhạc: bật';
+}
+
+function stopBirthdayTune() {
+  birthdayTuneNodes.forEach(node => { try { node.stop(); } catch {} });
+  birthdayTuneNodes = [];
+}
+
+function playHappyBirthdayTune() {
+  stopBirthdayTune();
+  const context = getBirthdayAudio();
+  if (!context || context.state === 'closed') return;
+  const beat = .34;
+  const notes = [
+    [392, 1], [392, 1], [440, 2], [392, 2], [523.25, 2], [493.88, 3],
+    [392, 1], [392, 1], [440, 2], [392, 2], [587.33, 2], [523.25, 3],
+    [392, 1], [392, 1], [783.99, 2], [659.25, 2], [523.25, 2], [493.88, 2], [440, 3],
+    [698.46, 1], [698.46, 1], [659.25, 2], [523.25, 2], [587.33, 2], [523.25, 4]
+  ];
+  let at = context.currentTime + .08;
+  notes.forEach(([frequency, beats]) => {
+    const oscillator = context.createOscillator();
+    const overtone = context.createOscillator();
+    const gain = context.createGain();
+    const duration = beat * beats * .92;
+    oscillator.type = 'sine';
+    overtone.type = 'triangle';
+    oscillator.frequency.setValueAtTime(frequency, at);
+    overtone.frequency.setValueAtTime(frequency * 2, at);
+    gain.gain.setValueAtTime(.0001, at);
+    gain.gain.exponentialRampToValueAtTime(.075, at + .045);
+    gain.gain.exponentialRampToValueAtTime(.0001, at + duration);
+    oscillator.connect(gain);
+    overtone.connect(gain);
+    gain.connect(context.destination);
+    oscillator.start(at); overtone.start(at);
+    oscillator.stop(at + duration + .03); overtone.stop(at + duration + .03);
+    birthdayTuneNodes.push(oscillator, overtone);
+    at += beat * beats;
+  });
+  window.setTimeout(() => { birthdayTuneNodes = []; }, Math.max(0, (at - context.currentTime + .25) * 1000));
+}
+
+function stopMicrophone() {
+  if (micCheckTimer) window.clearInterval(micCheckTimer);
+  micCheckTimer = 0;
+  if (micSource) { try { micSource.disconnect(); } catch {} }
+  micSource = null;
+  analyser = null;
+  micStream?.getTracks().forEach(track => track.stop());
+  micStream = null;
+  micToggle.textContent = '🎤 Bật micro để thổi nến';
+  micToggle.setAttribute('aria-pressed', 'false');
+  micToggle.disabled = false;
+}
+
+async function startMicrophone() {
+  if (micStream) { stopMicrophone(); setBirthdayStatus('Micro đã tắt · anh có thể dùng nút bấm giữ để thổi.'); return; }
+  if (!navigator.mediaDevices?.getUserMedia || !window.isSecureContext) {
+    setBirthdayStatus('Micro chưa khả dụng ở đây · hãy dùng nút “Thổi nến (bấm giữ)” nhé.');
+    return;
+  }
+  micToggle.disabled = true;
+  micToggle.textContent = 'Đang xin quyền micro…';
+  try {
+    const context = getBirthdayAudio();
+    if (!context) throw new Error('AudioContext không được hỗ trợ.');
+    micStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+    analyser = context.createAnalyser();
+    analyser.fftSize = 2048;
+    analyser.smoothingTimeConstant = .22;
+    micSource = context.createMediaStreamSource(micStream);
+    micSource.connect(analyser);
+    const wave = new Uint8Array(analyser.fftSize);
+    const spectrum = new Uint8Array(analyser.frequencyBinCount);
+    let noiseFloor = .012;
+    blowThresholdStart = 0;
+    micToggle.disabled = false;
+    micToggle.textContent = '🎤 Micro đang bật · chạm để tắt';
+    micToggle.setAttribute('aria-pressed', 'true');
+    setBirthdayStatus('Hãy đưa micro lại gần và thổi nhẹ vào nến 💨');
+    micCheckTimer = window.setInterval(() => {
+      if (!analyser || birthdayCelebrated || extinguishInProgress) return;
+      analyser.getByteTimeDomainData(wave);
+      analyser.getByteFrequencyData(spectrum);
+      let sum = 0;
+      for (const sample of wave) { const value = (sample - 128) / 128; sum += value * value; }
+      const rms = Math.sqrt(sum / wave.length);
+      let lowEnergy = 0, totalEnergy = 0;
+      const cutoff = Math.min(spectrum.length, Math.floor(2000 / (context.sampleRate / analyser.fftSize)));
+      for (let index = 0; index < spectrum.length; index++) {
+        const energy = spectrum[index] / 255;
+        totalEnergy += energy;
+        if (index < cutoff) lowEnergy += energy;
+      }
+      const lowRatio = lowEnergy / Math.max(totalEnergy, .001);
+      if (rms < .055) noiseFloor = noiseFloor * .94 + rms * .06;
+      const blowing = rms > Math.max(.07, noiseFloor * 2.5) && lowRatio > .35;
+      if (blowing) {
+        if (!blowThresholdStart) blowThresholdStart = performance.now();
+        if (performance.now() - blowThresholdStart > 170) beginCandleBlowOut('micro');
+      } else blowThresholdStart = 0;
+    }, 70);
+  } catch (error) {
+    stopMicrophone();
+    setBirthdayStatus('Không bật được micro · hãy dùng nút “Thổi nến (bấm giữ)” nhé.');
+  }
+}
+
+function beginCandleBlowOut(source = 'hold') {
+  if (birthdayCelebrated || extinguishInProgress) return;
+  const litCandles = [...candleHeartRing.querySelectorAll('.party-candle:not(.is-off)')];
+  if (!litCandles.length) { paintCandleStatus(); return; }
+  stopMicrophone();
+  extinguishInProgress = true;
+  birthdayIntro.classList.add('is-windy');
+  setBirthdayStatus(source === 'micro' ? 'Gió thổi qua rồi… những ngọn nến đang tắt dần ✨' : 'Điều ước bay theo làn gió… ✨');
+  litCandles.forEach((candle, index) => {
+    const delay = 100 + Math.random() * 1450 + index * 9;
+    window.setTimeout(() => {
+      if (birthdayCelebrated) return;
+      candle.classList.add('is-off', 'is-smoking');
+      candle.setAttribute('aria-pressed', 'false');
+      candle.setAttribute('aria-label', `Nến ${Number(candle.dataset.candleNumber) || index + 1}, đã tắt`);
+      blownOutCount += 1;
+      window.setTimeout(() => candle.classList.remove('is-smoking'), 1900);
+      if (blownOutCount >= litCandles.length) {
+        extinguishInProgress = false;
+        birthdayIntro.classList.remove('is-windy');
+        paintCandleStatus();
+      }
+    }, delay);
+  });
+}
+
+function launchBirthdayFireworks() {
+  const canvas = confettiCanvas;
+  const context = canvas.getContext('2d');
+  if (!context) return;
+  const ratio = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.round(window.innerWidth * ratio);
+  canvas.height = Math.round(window.innerHeight * ratio);
+  canvas.style.width = `${window.innerWidth}px`;
+  canvas.style.height = `${window.innerHeight}px`;
+  context.setTransform(ratio, 0, 0, ratio, 0, 0);
+  const colors = ['#f7a9bc', '#f8d889', '#b8e6e3', '#d6b4eb', '#fff2ce', '#ffa77e'];
+  const particles = Array.from({ length: 150 }, (_, index) => {
+    const burst = Math.floor(index / 38);
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 1.4 + Math.random() * 5.5;
+    return { x: window.innerWidth * (.18 + burst * .21) + (Math.random() - .5) * 50, y: window.innerHeight * (.18 + Math.random() * .25), vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 1.2, size: 2 + Math.random() * 4, color: colors[index % colors.length], spin: Math.random() * 6, life: .8 + Math.random() * .2, shape: index % 3 };
+  });
+  const started = performance.now();
+  canvas.classList.add('is-celebrating');
+  function frame(now) {
+    const elapsed = now - started;
+    context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    particles.forEach(particle => {
+      particle.x += particle.vx;
+      particle.y += particle.vy;
+      particle.vy += .035;
+      particle.vx *= .996;
+      particle.spin += .08;
+      particle.life -= .004;
+      context.globalAlpha = Math.max(0, particle.life);
+      context.fillStyle = particle.color;
+      context.save();
+      context.translate(particle.x, particle.y);
+      context.rotate(particle.spin);
+      if (particle.shape === 0) {
+        context.beginPath(); context.arc(0, 0, particle.size, 0, Math.PI * 2); context.fill();
+      } else {
+        context.fillRect(-particle.size / 2, -particle.size * 1.8, particle.size, particle.size * 3.6);
+      }
+      context.restore();
+    });
+    context.globalAlpha = 1;
+    if (elapsed < 3400) requestAnimationFrame(frame);
+    else { context.clearRect(0, 0, canvas.width, canvas.height); canvas.classList.remove('is-celebrating'); }
+  }
+  requestAnimationFrame(frame);
+}
+
+function celebrateBirthday() {
+  if (birthdayCelebrated) return;
+  birthdayCelebrated = true;
+  extinguishInProgress = false;
+  birthdayIntro.classList.remove('is-windy');
+  birthdayIntro.classList.add('is-celebrating');
+  stopMicrophone();
+  if (backgroundMusicTimer) { window.clearInterval(backgroundMusicTimer); backgroundMusicTimer = 0; musicToggle.setAttribute('aria-pressed', 'false'); musicToggle.textContent = '♫ Nhạc hộp nhạc: tắt'; }
+  setBirthdayStatus('Mọi điều ước đang bay lên cùng những vì sao ✨');
+  document.querySelector('#continue-intro-cut').hidden = false;
+  launchBirthdayFireworks();
+  playHappyBirthdayTune();
+  window.setTimeout(() => { if (!birthdayCard.open) birthdayCard.showModal(); }, 650);
+}
+
+function stopBirthdayAudio() {
+  stopMicrophone();
+  if (backgroundMusicTimer) window.clearInterval(backgroundMusicTimer);
+  backgroundMusicTimer = 0;
+  stopBirthdayTune();
+  if (audioContext && audioContext.state !== 'closed') audioContext.close();
+  audioContext = null;
+  musicToggle.setAttribute('aria-pressed', 'false');
+  musicToggle.textContent = '♫ Nhạc hộp nhạc: tắt';
+}
+
+function continueToCakeCut() {
+  birthdayCard.close();
+  stopBirthdayAudio();
+  transitionScene(birthdayIntro, opening, () => {
+    birthdayIntro.hidden = true;
+    opening.hidden = false;
+    document.body.classList.remove('birthday-intro-active');
+    prepareCake();
+  });
+}
+
+function startHoldBlow() {
+  if (holdBlowTimer || birthdayCelebrated || extinguishInProgress) return;
+  getBirthdayAudio();
+  setBirthdayStatus('Đang giữ để thổi… 💨');
+  holdBlow.classList.add('is-holding');
+  holdBlowTimer = window.setTimeout(() => {
+    holdBlowTimer = 0;
+    holdBlow.classList.remove('is-holding');
+    beginCandleBlowOut('hold');
+  }, 430);
+}
+
+function cancelHoldBlow() {
+  if (holdBlowTimer) {
+    window.clearTimeout(holdBlowTimer);
+    holdBlowTimer = 0;
+    holdBlow.classList.remove('is-holding');
+    if (!birthdayCelebrated && !extinguishInProgress) setBirthdayStatus('Bấm giữ nút “Thổi nến” để gửi một làn gió nhé.');
+  }
+}
+
+micToggle.addEventListener('click', startMicrophone);
+musicToggle.addEventListener('click', toggleBirthdayMusic);
+document.querySelector('#relight-candles').addEventListener('click', relightCandles);
+document.querySelector('#continue-to-cut').addEventListener('click', continueToCakeCut);
+document.querySelector('#continue-intro-cut').addEventListener('click', continueToCakeCut);
+document.querySelector('#birthday-card-close').addEventListener('click', () => birthdayCard.close());
+document.querySelector('#hold-blow').addEventListener('pointerdown', event => { event.preventDefault(); startHoldBlow(); });
+document.querySelector('#hold-blow').addEventListener('pointerup', cancelHoldBlow);
+document.querySelector('#hold-blow').addEventListener('pointercancel', cancelHoldBlow);
+document.querySelector('#hold-blow').addEventListener('pointerleave', cancelHoldBlow);
+document.querySelector('#hold-blow').addEventListener('keydown', event => { if (event.key === ' ' || event.key === 'Enter') { event.preventDefault(); startHoldBlow(); } });
+document.querySelector('#hold-blow').addEventListener('keyup', event => { if (event.key === ' ' || event.key === 'Enter') cancelHoldBlow(); });
 
 memoryGrid.addEventListener('click', event => {
   const card = event.target.closest('.memory-photo');
@@ -397,6 +816,9 @@ function playHeartCycle() {
   heartTimers.push(window.setTimeout(playHeartCycle, 8550));
 }
 
+makePartySprinkles();
+makeBirthdayStars();
+relightCandles();
 makeMemoryGallery();
 seedMagicDust();
 observeChapterEntrances();
@@ -421,5 +843,3 @@ document.querySelector('#restart').addEventListener('click', () => transitionSce
   opening.hidden = false;
   prepareCake();
 }));
-
-prepareCake();

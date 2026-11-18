@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#fff3f4" />
-  <title>Chiếc bánh sinh nhật dành cho em</title>
+  <meta name="theme-color" content="#0b0c10" />
+  <title>Happy Birthday mei.100</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="thu-nho.css" />
   <link rel="stylesheet" href="thu-nho-birthday.css" />
   <link rel="stylesheet" href="thu-nho-interactions.css" />
@@ -14,7 +17,7 @@
   <link rel="stylesheet" href="thu-nho-photos.css" />
   <script src="thu-nho.js" defer></script>
 </head>
-<body>
+<body class="birthday-intro-active">
   <div class="grain" aria-hidden="true"></div>
   <div class="magic-dust" id="magic-dust" aria-hidden="true"></div>
   <div class="scroll-celebration" id="scroll-celebration" aria-hidden="true"></div>
@@ -27,7 +30,28 @@
   <header class="topline"><span class="tiny-heart">♥</span><span>GỬI EM, CÔ GÁI ANH THƯƠNG</span><span class="tiny-heart">♥</span></header>
 
   <main>
-    <section class="opening" id="opening" aria-labelledby="intro-title">
+    <section class="birthday-intro" id="birthday-intro" aria-labelledby="birthday-intro-title">
+      <div class="birthday-sky" aria-hidden="true"><span class="galaxy galaxy-one"></span><span class="galaxy galaxy-two"></span><div class="birthday-stars" id="birthday-stars"></div><div class="birthday-bokeh"></div></div>
+      <header class="birthday-intro-heading"><span class="intro-overline">A LITTLE WISH FOR YOU</span><h1 id="birthday-intro-title">HAPPY BIRTHDAY!</h1><p>💫 Hãy nhắm mắt, ước một điều gì đó thật đẹp, rồi thổi nến nhé! 💫</p></header>
+      <div class="intro-cake-wrap">
+        <div class="intro-light intro-light-left" aria-hidden="true"></div><div class="intro-light intro-light-right" aria-hidden="true"></div>
+        <div class="intro-cake" id="intro-cake" aria-label="Bánh sinh nhật hai tầng với những ngọn nến đang cháy">
+          <div class="cake-topper" aria-hidden="true">♡</div>
+          <div class="cake-upper-tier"><div class="upper-drips" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="cake-top-surface" id="cake-top-surface" role="group" aria-label="24 ngọn nến trên mặt bánh"><div class="candle-heart-ring" id="candle-heart-ring"></div></div></div>
+          <div class="cake-lower-tier"><div class="lower-drips" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="cake-sprinkles" id="cake-sprinkles" aria-hidden="true"></div><span class="cake-tier-ribbon ribbon-one"></span><span class="cake-tier-ribbon ribbon-two"></span></div>
+          <div class="cake-plate"><span></span><i></i></div>
+        </div>
+      </div>
+      <div class="intro-wish"><span class="wish-rule"></span><p>Mừng sinh nhật em <strong>mei.100</strong></p><span class="wish-rule"></span></div>
+      <div class="birthday-controls">
+        <p class="birthday-instruction">🎯 Chạm vào mặt bánh để thêm nến <span>·</span> 🎤 Thổi vào micro để tắt nến</p>
+        <div class="birthday-control-row"><button class="intro-control-button mic-button" id="mic-toggle" type="button">🎤 Bật micro để thổi nến</button><button class="intro-control-button music-button" id="music-toggle" type="button" aria-pressed="false">♫ Nhạc hộp nhạc: tắt</button><button class="intro-control-button hold-blow-button" id="hold-blow" type="button" aria-label="Nhấn giữ để thổi tắt nến">💨 Thổi nến <span>(bấm giữ)</span></button><button class="intro-control-button continue-cut-button" id="continue-intro-cut" type="button" hidden>Tiếp tục đến cảnh cắt bánh <span>→</span></button></div>
+        <p class="birthday-status" id="birthday-status" aria-live="polite">24 ngọn nến đang chờ điều ước của em ✨</p>
+      </div>
+      <dialog class="birthday-card" id="birthday-card" aria-labelledby="birthday-card-title"><button class="birthday-card-close" id="birthday-card-close" type="button" aria-label="Đóng thiệp">×</button><span class="birthday-card-sparkle">✦</span><p class="card-kicker">HAPPY BIRTHDAY</p><h2 id="birthday-card-title">Chúc mừng sinh nhật<br /><em>mei.100</em></h2><p>Chúc em tuổi mới thật nhiều niềm vui, luôn rạng rỡ và mọi điều ước đều thành sự thật. Anh mong ngày nào cũng được nhìn thấy nụ cười của em. ♡</p><div class="birthday-card-actions"><button class="intro-control-button relight-button" id="relight-candles" type="button">🕯 Thắp lại nến</button><button class="intro-control-button continue-cut-button" id="continue-to-cut" type="button">Mở món quà tiếp theo <span>→</span></button></div></dialog>
+      <canvas class="birthday-confetti" id="birthday-confetti" aria-hidden="true"></canvas>
+    </section>
+    <section class="opening" id="opening" aria-labelledby="intro-title" hidden>
       <div class="scene-glow" aria-hidden="true"></div>
       <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
       <div class="scene-copy">
@@ -169,5 +193,6 @@
       </section>
     </div>
   </main>
+  <noscript><style>.birthday-intro{display:none!important}body.birthday-intro-active .topline{display:flex!important}#opening[hidden]{display:grid!important}</style></noscript>
 </body>
 </html>
