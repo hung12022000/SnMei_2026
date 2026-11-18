@@ -51,6 +51,7 @@ let micCheckTimer = 0;
 let backgroundMusicTimer = 0;
 let birthdayTuneNodes = [];
 let blowThresholdStart = 0;
+let introMusicGestureHandled = false;
 
 // Stable art direction: every photograph appears once in a deliberate scene.
 const memoryScenes = [
@@ -226,14 +227,8 @@ function playTone(frequency, duration = .35, volume = .045) {
   oscillator.stop(context.currentTime + duration + .035);
 }
 
-function toggleBirthdayMusic() {
-  if (backgroundMusicTimer) {
-    window.clearInterval(backgroundMusicTimer);
-    backgroundMusicTimer = 0;
-    musicToggle.setAttribute('aria-pressed', 'false');
-    musicToggle.textContent = '♫ Nhạc hộp nhạc: tắt';
-    return;
-  }
+function startBirthdayMusic() {
+  if (backgroundMusicTimer) return;
   if (!getBirthdayAudio()) { setBirthdayStatus('Thiết bị này chưa hỗ trợ phát nhạc bằng Web Audio.'); return; }
   const notes = [523.25, 392, 440, 392, 523.25, 493.88, 392, 392, 440, 392, 587.33, 523.25];
   let noteIndex = 0;
@@ -242,6 +237,25 @@ function toggleBirthdayMusic() {
   musicToggle.setAttribute('aria-pressed', 'true');
   musicToggle.textContent = '♫ Nhạc hộp nhạc: bật';
 }
+
+function toggleBirthdayMusic() {
+  introMusicGestureHandled = true;
+  if (backgroundMusicTimer) {
+    window.clearInterval(backgroundMusicTimer);
+    backgroundMusicTimer = 0;
+    musicToggle.setAttribute('aria-pressed', 'false');
+    musicToggle.textContent = '🎵 Chạm để bắt đầu với nhạc';
+    return;
+  }
+  startBirthdayMusic();
+}
+
+birthdayIntro.addEventListener('click', event => {
+  if (introMusicGestureHandled || birthdayCelebrated || event.target.closest('.birthday-card')) return;
+  if (event.target.closest('#music-toggle')) return;
+  introMusicGestureHandled = true;
+  startBirthdayMusic();
+});
 
 function stopBirthdayTune() {
   birthdayTuneNodes.forEach(node => { try { node.stop(); } catch {} });
@@ -299,7 +313,7 @@ function stopMicrophone() {
 async function startMicrophone() {
   if (micStream) { stopMicrophone(); setBirthdayStatus('Micro đã tắt · anh có thể dùng nút bấm giữ để thổi.'); return; }
   if (!navigator.mediaDevices?.getUserMedia || !window.isSecureContext) {
-    setBirthdayStatus('Micro chưa khả dụng ở đây · hãy dùng nút “Thổi nến (bấm giữ)” nhé.');
+    setBirthdayStatus('Micro chưa khả dụng ở đây · chạm nút “Thổi nến” để tiếp tục nhé.');
     return;
   }
   micToggle.disabled = true;
@@ -345,7 +359,7 @@ async function startMicrophone() {
     }, 70);
   } catch (error) {
     stopMicrophone();
-    setBirthdayStatus('Không bật được micro · hãy dùng nút “Thổi nến (bấm giữ)” nhé.');
+    setBirthdayStatus('Không bật được micro · chạm nút “Thổi nến” để tiếp tục nhé.');
   }
 }
 
@@ -430,7 +444,7 @@ function celebrateBirthday() {
   birthdayIntro.classList.remove('is-windy');
   birthdayIntro.classList.add('is-celebrating');
   stopMicrophone();
-  if (backgroundMusicTimer) { window.clearInterval(backgroundMusicTimer); backgroundMusicTimer = 0; musicToggle.setAttribute('aria-pressed', 'false'); musicToggle.textContent = '♫ Nhạc hộp nhạc: tắt'; }
+  if (backgroundMusicTimer) { window.clearInterval(backgroundMusicTimer); backgroundMusicTimer = 0; musicToggle.setAttribute('aria-pressed', 'false'); musicToggle.textContent = '🎵 Chạm để bắt đầu với nhạc'; }
   setBirthdayStatus('Mọi điều ước đang bay lên cùng những vì sao ✨');
   document.querySelector('#continue-intro-cut').hidden = false;
   launchBirthdayFireworks();
@@ -446,7 +460,7 @@ function stopBirthdayAudio() {
   if (audioContext && audioContext.state !== 'closed') audioContext.close();
   audioContext = null;
   musicToggle.setAttribute('aria-pressed', 'false');
-  musicToggle.textContent = '♫ Nhạc hộp nhạc: tắt';
+  musicToggle.textContent = '🎵 Chạm để bắt đầu với nhạc';
 }
 
 function continueToCakeCut() {
@@ -477,7 +491,7 @@ function cancelHoldBlow() {
     window.clearTimeout(holdBlowTimer);
     holdBlowTimer = 0;
     holdBlow.classList.remove('is-holding');
-    if (!birthdayCelebrated && !extinguishInProgress) setBirthdayStatus('Bấm giữ nút “Thổi nến” để gửi một làn gió nhé.');
+    if (!birthdayCelebrated && !extinguishInProgress) setBirthdayStatus('Chạm hoặc bấm giữ nút “Thổi nến” để gửi một làn gió nhé.');
   }
 }
 
@@ -491,6 +505,7 @@ document.querySelector('#hold-blow').addEventListener('pointerdown', event => { 
 document.querySelector('#hold-blow').addEventListener('pointerup', cancelHoldBlow);
 document.querySelector('#hold-blow').addEventListener('pointercancel', cancelHoldBlow);
 document.querySelector('#hold-blow').addEventListener('pointerleave', cancelHoldBlow);
+document.querySelector('#hold-blow').addEventListener('click', () => beginCandleBlowOut('tap'));
 document.querySelector('#hold-blow').addEventListener('keydown', event => { if (event.key === ' ' || event.key === 'Enter') { event.preventDefault(); startHoldBlow(); } });
 document.querySelector('#hold-blow').addEventListener('keyup', event => { if (event.key === ' ' || event.key === 'Enter') cancelHoldBlow(); });
 
