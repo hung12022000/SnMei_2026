@@ -121,6 +121,19 @@ body.birthday-intro-active>.topline{display:none}
 .birthday-card-actions .continue-cut-button{color:#fff;background:linear-gradient(135deg,#c87d93,#aa718e);border-color:#bc8293;box-shadow:0 8px 20px #a5577233}
 .birthday-confetti{position:fixed;inset:0;z-index:80;width:100%;height:100%;pointer-events:none;opacity:0}
 .birthday-confetti.is-celebrating{opacity:1}
+/* A deeper, fairytale night sky with a slow meteor and delicate starbursts. */
+.birthday-sky{background:radial-gradient(ellipse at 18% 17%,#7185b52e,transparent 38%),radial-gradient(ellipse at 80% 22%,#bd80b32b,transparent 34%),radial-gradient(ellipse at 48% 80%,#47335f9c,transparent 62%),linear-gradient(180deg,#090b19 0%,#111322 56%,#171224 100%)}
+.birthday-sky:after{content:"";position:absolute;top:5%;right:-22%;width:190px;height:2px;border-radius:50%;opacity:0;background:linear-gradient(90deg,transparent,#fff8dc,#fff);box-shadow:0 0 12px 2px #fff0bf;transform:rotate(-28deg);animation:shooting-star 11s ease-in-out 2s infinite}
+.birthday-star{box-shadow:0 0 8px 2px #f7ddc9a6,0 0 18px #f7ddc940}
+.birthday-star-bright{background:#fff8df;box-shadow:0 0 10px 3px #ffe9b9,0 0 24px 5px #dfb7ff77}
+.birthday-star-bright:after,.birthday-star-bright:before{content:"";position:absolute;left:50%;top:50%;background:#fff5d9;transform:translate(-50%,-50%);border-radius:50%;box-shadow:0 0 8px #ffe9b9}
+.birthday-star-bright:before{width:1px;height:11px}.birthday-star-bright:after{width:11px;height:1px}
+.birthday-bokeh{opacity:.72;background:radial-gradient(circle at 11% 37%,#ffd2dc38 0 3px,transparent 5px),radial-gradient(circle at 86% 57%,#fff0d139 0 5px,transparent 7px),radial-gradient(circle at 72% 13%,#dec8ff36 0 2px,transparent 5px),radial-gradient(circle at 25% 78%,#fff2d92d 0 5px,transparent 7px),radial-gradient(circle at 93% 83%,#f2c3dc2e 0 3px,transparent 6px)}
+.party-candle.is-off .candle-flame{transition:opacity .42s ease,transform .52s cubic-bezier(.2,.8,.2,1),filter .42s ease}
+.party-candle.is-blowing-out .candle-flame{animation:candle-gutter .52s ease-in-out both;filter:brightness(1.2) drop-shadow(0 0 12px #ffe0a5)}
+.is-windy .party-candle:not(.is-off) .candle-flame{animation:candle-in-wind .22s ease-in-out infinite alternate}
+@keyframes shooting-star{0%,71%{opacity:0;transform:translate3d(0,0,0) rotate(-28deg)}74%{opacity:1}81%{opacity:.75;transform:translate3d(-115vw,58vh,0) rotate(-28deg)}82%,100%{opacity:0;transform:translate3d(-125vw,64vh,0) rotate(-28deg)}}
+@keyframes candle-gutter{0%{opacity:1;transform:translateX(-50%) rotate(-22deg) scale(1,1)}30%{transform:translateX(-63%) rotate(-39deg) scale(.8,1.12)}58%{opacity:.9;transform:translateX(-42%) rotate(-12deg) scale(1.08,.8)}82%{opacity:.68;transform:translateX(-53%) rotate(-34deg) scale(.62,.8)}100%{opacity:0;transform:translateX(-50%) rotate(-26deg) scale(.12,.35)}}
 @keyframes star-twinkle{from{opacity:.28;scale:.72}to{opacity:1;scale:1.25}}
 @keyframes bokeh-drift{from{transform:translate3d(-1%,0,0) scale(1)}to{transform:translate3d(1%,1.2%,0) scale(1.05)}}
 @keyframes cake-light-pulse{from{opacity:.5;scale:.92}to{opacity:1;scale:1.08}}

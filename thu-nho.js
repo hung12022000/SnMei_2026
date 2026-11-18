@@ -190,14 +190,15 @@ function makePartySprinkles() {
 
 function makeBirthdayStars() {
   const layer = document.querySelector('#birthday-stars');
-  for (let index = 0; index < 46; index++) {
+  for (let index = 0; index < 84; index++) {
     const star = document.createElement('i');
     star.className = 'birthday-star';
     star.style.left = `${(index * 47 + 13) % 100}%`;
     star.style.top = `${(index * 31 + 9) % 100}%`;
-    star.style.setProperty('--star-size', `${1 + (index % 4)}px`);
-    star.style.setProperty('--star-delay', `${-(index % 13) * .37}s`);
-    star.style.setProperty('--star-duration', `${2.2 + (index % 8) * .42}s`);
+    star.style.setProperty('--star-size', `${index % 11 === 0 ? 3 : 1 + (index % 3)}px`);
+    star.style.setProperty('--star-delay', `${-(index % 17) * .43}s`);
+    star.style.setProperty('--star-duration', `${1.8 + (index % 9) * .48}s`);
+    if (index % 11 === 0) star.classList.add('birthday-star-bright');
     layer.append(star);
   }
 }
@@ -216,24 +217,33 @@ function playTone(frequency, duration = .35, volume = .045) {
   const context = getBirthdayAudio();
   if (!context || context.state === 'closed') return;
   const oscillator = context.createOscillator();
+  const overtone = context.createOscillator();
   const gain = context.createGain();
+  const overtoneGain = context.createGain();
   oscillator.type = 'sine';
   oscillator.frequency.value = frequency;
+  overtone.type = 'triangle';
+  overtone.frequency.value = frequency * 2;
   gain.gain.setValueAtTime(.0001, context.currentTime);
   gain.gain.exponentialRampToValueAtTime(volume, context.currentTime + .025);
   gain.gain.exponentialRampToValueAtTime(.0001, context.currentTime + duration);
+  overtoneGain.gain.setValueAtTime(.0001, context.currentTime);
+  overtoneGain.gain.exponentialRampToValueAtTime(volume * .22, context.currentTime + .03);
+  overtoneGain.gain.exponentialRampToValueAtTime(.0001, context.currentTime + duration * .78);
   oscillator.connect(gain).connect(context.destination);
-  oscillator.start();
+  overtone.connect(overtoneGain).connect(context.destination);
+  oscillator.start(); overtone.start();
   oscillator.stop(context.currentTime + duration + .035);
+  overtone.stop(context.currentTime + duration + .035);
 }
 
 function startBirthdayMusic() {
   if (backgroundMusicTimer) return;
   if (!getBirthdayAudio()) { setBirthdayStatus('Thiết bị này chưa hỗ trợ phát nhạc bằng Web Audio.'); return; }
-  const notes = [523.25, 392, 440, 392, 523.25, 493.88, 392, 392, 440, 392, 587.33, 523.25];
+  const notes = [392, 392, 440, 392, 523.25, 493.88, 392, 392, 440, 392, 587.33, 523.25];
   let noteIndex = 0;
-  playTone(notes[noteIndex++], .42, .025);
-  backgroundMusicTimer = window.setInterval(() => playTone(notes[noteIndex++ % notes.length], .44, .025), 470);
+  playTone(notes[noteIndex++], .48, .052);
+  backgroundMusicTimer = window.setInterval(() => playTone(notes[noteIndex++ % notes.length], .48, .052), 500);
   musicToggle.setAttribute('aria-pressed', 'true');
   musicToggle.textContent = '♫ Nhạc hộp nhạc: bật';
 }
@@ -324,12 +334,11 @@ async function startMicrophone() {
     micStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
     analyser = context.createAnalyser();
     analyser.fftSize = 2048;
-    analyser.smoothingTimeConstant = .22;
+    analyser.smoothingTimeConstant = .12;
     micSource = context.createMediaStreamSource(micStream);
     micSource.connect(analyser);
     const wave = new Uint8Array(analyser.fftSize);
-    const spectrum = new Uint8Array(analyser.frequencyBinCount);
-    let noiseFloor = .012;
+      let noiseFloor = .01;
     blowThresholdStart = 0;
     micToggle.disabled = false;
     micToggle.textContent = '🎤 Micro đang bật · chạm để tắt';
@@ -338,23 +347,16 @@ async function startMicrophone() {
     micCheckTimer = window.setInterval(() => {
       if (!analyser || birthdayCelebrated || extinguishInProgress) return;
       analyser.getByteTimeDomainData(wave);
-      analyser.getByteFrequencyData(spectrum);
       let sum = 0;
       for (const sample of wave) { const value = (sample - 128) / 128; sum += value * value; }
       const rms = Math.sqrt(sum / wave.length);
-      let lowEnergy = 0, totalEnergy = 0;
-      const cutoff = Math.min(spectrum.length, Math.floor(2000 / (context.sampleRate / analyser.fftSize)));
-      for (let index = 0; index < spectrum.length; index++) {
-        const energy = spectrum[index] / 255;
-        totalEnergy += energy;
-        if (index < cutoff) lowEnergy += energy;
-      }
-      const lowRatio = lowEnergy / Math.max(totalEnergy, .001);
-      if (rms < .055) noiseFloor = noiseFloor * .94 + rms * .06;
-      const blowing = rms > Math.max(.07, noiseFloor * 2.5) && lowRatio > .35;
+      // Breath is broadband, so don't reject it based on a bass-only spectrum test.
+      // Slowly adapt to room noise, while keeping a low enough floor for a phone mic.
+      if (rms < .16) noiseFloor = noiseFloor * .96 + rms * .04;
+      const blowing = rms > Math.max(.034, noiseFloor * 1.7);
       if (blowing) {
         if (!blowThresholdStart) blowThresholdStart = performance.now();
-        if (performance.now() - blowThresholdStart > 170) beginCandleBlowOut('micro');
+        if (performance.now() - blowThresholdStart > 120) beginCandleBlowOut('micro');
       } else blowThresholdStart = 0;
     }, 70);
   } catch (error) {
@@ -372,19 +374,24 @@ function beginCandleBlowOut(source = 'hold') {
   birthdayIntro.classList.add('is-windy');
   setBirthdayStatus(source === 'micro' ? 'Gió thổi qua rồi… những ngọn nến đang tắt dần ✨' : 'Điều ước bay theo làn gió… ✨');
   litCandles.forEach((candle, index) => {
-    const delay = 100 + Math.random() * 1450 + index * 9;
+    const delay = 80 + Math.random() * 1650 + index * 8;
     window.setTimeout(() => {
       if (birthdayCelebrated) return;
-      candle.classList.add('is-off', 'is-smoking');
-      candle.setAttribute('aria-pressed', 'false');
-      candle.setAttribute('aria-label', `Nến ${Number(candle.dataset.candleNumber) || index + 1}, đã tắt`);
-      blownOutCount += 1;
-      window.setTimeout(() => candle.classList.remove('is-smoking'), 1900);
-      if (blownOutCount >= litCandles.length) {
-        extinguishInProgress = false;
-        birthdayIntro.classList.remove('is-windy');
-        paintCandleStatus();
-      }
+      candle.classList.add('is-blowing-out');
+      window.setTimeout(() => {
+        if (birthdayCelebrated) return;
+        candle.classList.remove('is-blowing-out');
+        candle.classList.add('is-off', 'is-smoking');
+        candle.setAttribute('aria-pressed', 'false');
+        candle.setAttribute('aria-label', `Nến ${Number(candle.dataset.candleNumber) || index + 1}, đã tắt`);
+        blownOutCount += 1;
+        window.setTimeout(() => candle.classList.remove('is-smoking'), 1900);
+        if (blownOutCount >= litCandles.length) {
+          extinguishInProgress = false;
+          birthdayIntro.classList.remove('is-windy');
+          paintCandleStatus();
+        }
+      }, 520 + Math.random() * 180);
     }, delay);
   });
 }
@@ -624,6 +631,7 @@ function transitionScene(from, to, swap = () => {}) {
   transitionBusy = true;
   sceneTransition.hidden = false;
   sceneTransition.classList.remove('is-unfolding');
+  sceneTransition.classList.toggle('is-birthday-unfold', from === birthdayIntro);
   sceneTransition.classList.add('is-gathering');
   from?.classList.add('scene-folding');
   window.setTimeout(() => {
